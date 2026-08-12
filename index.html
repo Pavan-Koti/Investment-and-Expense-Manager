@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Expense Manager — Personal Finance Planner</title>
+<title>Expense Manager — Personal Finance</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
@@ -40,9 +40,38 @@ button.danger{color:var(--red)}
 button.success{color:var(--green); border-color:var(--hair);}
 button.outline{background:transparent; border:1px solid var(--hair); color:var(--text);}
 
-.google-btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; background:#fff; color:#3c4043; border:1px solid #dadce0; border-radius:12px; padding:10px 16px; font-weight:500; font-size:14px; cursor:pointer; transition:background .2s, box-shadow .2s; }
-.google-btn:hover { background:#f8f9fa; box-shadow:0 2px 8px rgba(0,0,0,.08); }
-.spinner { border: 3px solid var(--hair); border-top: 3px solid var(--accent); border-radius: 50%; width: 22px; height: 22px; animation: spin 1s linear infinite; display:inline-block; }
+/* Premium Landing Page Styling */
+#landingPage { 
+    display:flex; flex-direction:column; align-items:center; justify-content:center; 
+    min-height:100vh; padding:20px; text-align:center;
+    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+}
+body.dark #landingPage {
+    background: linear-gradient(135deg, #121212 0%, #1e1e24 100%);
+}
+.landing-card { 
+    background:var(--surface); border:1px solid var(--hair); border-radius:24px; 
+    padding:50px 40px; box-shadow:0 20px 50px rgba(0,0,0,0.08); 
+    max-width:440px; width:100%; backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); 
+}
+body.dark .landing-card { box-shadow:0 20px 50px rgba(0,0,0,0.4); }
+.landing-card .brand-icon {
+    width:64px; height:64px; font-size:32px; font-weight:700; color:#fff;
+    background: linear-gradient(135deg, var(--accent) 0%, #8e8df5 100%);
+    border-radius:18px; display:grid; place-items:center; margin:0 auto 24px;
+    box-shadow: 0 10px 20px var(--accentSoft);
+}
+.landing-card h1 { margin:0 0 12px; font-size:30px; letter-spacing:-0.05em; font-weight:700; color:var(--text); }
+.landing-card p { color:var(--muted); font-size:15px; margin-bottom:35px; line-height:1.6; }
+
+.google-btn-large { 
+    display:flex; align-items:center; justify-content:center; gap:12px; 
+    background:#fff; color:#3c4043; border:1px solid #dadce0; border-radius:12px; 
+    padding:14px 24px; font-weight:500; font-size:16px; cursor:pointer; 
+    transition:background .2s, box-shadow .2s; width:100%; 
+}
+.google-btn-large:hover { background:#f8f9fa; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+.spinner { border: 3px solid var(--hair); border-top: 3px solid var(--accent); border-radius: 50%; width: 28px; height: 28px; animation: spin 1s linear infinite; margin: 0 auto 16px; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 .app{max-width:1380px;margin:auto;padding:16px;display:grid;grid-template-columns:205px minmax(0,1fr);gap:20px;min-height:100vh}
@@ -126,16 +155,37 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 @media(max-width:700px){.financial-summary{grid-template-columns:1fr !important}.financial-summary > .card{height:auto !important}}
 </style>
 </head>
-<body data-product-version="V16.0-QA">
+<body data-product-version="V17.0-QA">
+
+<!-- Premium Landing Page (Forced Authentication) -->
+<div id="landingPage">
+    <div class="landing-card">
+        <div class="brand-icon">₹</div>
+        <h1>Expense Manager</h1>
+        <p>Your secure, intelligent personal finance planner. Sign in to seamlessly sync your portfolio across all your devices.</p>
+        
+        <div id="landingAuth">
+            <button class="google-btn-large" onclick="triggerGoogleLogin()">
+                <svg width="20" height="20" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.616z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.997 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+                Sign in with Google
+            </button>
+        </div>
+
+        <div id="landingLoading" style="display:none; flex-direction:column; align-items:center; margin-top:20px;">
+            <div class="spinner"></div>
+            <span class="small" id="loadingText" style="color:var(--text); font-weight:500;">Securing your connection...</span>
+        </div>
+    </div>
+</div>
 
 <!-- Main Application Dashboard -->
-<div class="app" id="appContent">
+<div class="app" id="appContent" style="display:none;">
 <aside class="sidebar">
   <div class="brand" onclick="showTab('profile')" title="View Profile & Sync Settings">
     <div class="brandrow">
         <div class="brandmark" id="sidebarLogo">₹</div>
         <img id="sidebarProfPic" src="" style="width:30px; height:30px; border-radius:9px; display:none; object-fit:cover;">
-        <div><div class="brandname" id="sidebarName">Expense Manager</div><div class="brandhint" id="sidebarEmail">Offline Mode</div></div>
+        <div><div class="brandname" id="sidebarName">Loading...</div><div class="brandhint" id="sidebarEmail">Synced Securely</div></div>
     </div>
   </div>
   <nav class="nav" id="sideNav">
@@ -314,38 +364,19 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 </div>
 </div></section>
 
-<!-- Profile & Sync Tab -->
+<!-- Cleaned Profile & Sync Tab -->
 <section id="profile" style="display:none"><div class="layout">
     <div class="card">
       <h2>Google Cloud Sync</h2>
-      <p class="small" style="margin-bottom:15px;">Your data automatically syncs across all your devices using your private Google Drive application folder (`drive.appdata`).</p>
+      <p class="small" style="margin-bottom:15px;">Your data is automatically synced to your private Google Drive using an isolated application folder.</p>
       
-      <div id="authActiveArea" style="display:none; align-items:center; gap:15px; padding:15px; border:1px solid var(--hair); border-radius:12px; background:var(--surface2);">
+      <div id="authActiveArea" style="display:flex; align-items:center; gap:15px; padding:15px; border:1px solid var(--hair); border-radius:12px; background:var(--surface2);">
           <img id="profileTabImg" src="" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
           <div style="flex:1;">
-              <b id="profileTabName" style="display:block; font-size:16px;">User Name</b>
-              <span id="profileTabEmail" class="small">user@gmail.com</span>
+              <b id="profileTabName" style="display:block; font-size:16px;">Loading...</b>
+              <span id="profileTabEmail" class="small">Loading...</span>
           </div>
           <button class="danger" onclick="handleGoogleSignOut()">Log Out</button>
-      </div>
-      
-      <div id="authSetupArea" style="margin-top:10px;">
-          <p class="small" style="color:var(--amber);">You are currently operating in local offline mode.</p>
-          <button class="google-btn" onclick="triggerGoogleLogin()" style="width:100%; margin-top:10px;">
-              <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.616z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.997 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
-              Sign in with Google
-          </button>
-      </div>
-
-      <div style="margin-top:20px; padding-top:15px; border-top:1px solid var(--hair);">
-          <h3>Google Drive Setup Guide</h3>
-          <p class="small" style="line-height:1.5;">To grant this app permission to create its sync file in your Google Drive:</p>
-          <ol class="small" style="padding-left:18px; line-height:1.6; margin-top:8px;">
-              <li>Go to <a href="https://console.cloud.google.com/" target="_blank" style="color:var(--accent);">Google Cloud Console</a> and enable <b>Google Drive API</b>.</li>
-              <li>Under <b>OAuth consent screen</b> > <b>Scopes</b>, add <code>https://www.googleapis.com/auth/drive.appdata</code>.</li>
-              <li>Add your email under <b>Test users</b>.</li>
-              <li>Under <b>Credentials</b>, add your local origin URL (e.g. <code>http://localhost:8000</code>).</li>
-          </ol>
       </div>
     </div>
     
@@ -353,10 +384,10 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
       <h2>Sync Status</h2>
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px; margin-top:10px;">
           <span class="status-dot" id="tabSyncDot" style="width:14px; height:14px;"></span>
-          <b id="syncStatusText">Offline Mode</b>
+          <b id="syncStatusText">Checking Connection...</b>
       </div>
-      <p class="small">When logged in, your changes automatically sync to Google Drive. You can also manually trigger a backup.</p>
-      <button onclick="forceSyncToDrive()" style="margin-top:10px;" id="btnForceSync" disabled>Force Backup to Drive</button>
+      <p class="small">Changes save to Google Drive instantly. If you modified data on another device, you can pull the latest backup manually.</p>
+      <button onclick="syncOrInitDrive()" style="margin-top:10px;" id="btnForceSync">Pull Latest Data from Drive</button>
       
       <div style="margin-top:30px; padding-top:15px; border-top:1px solid var(--hair);">
           <button class="danger" onclick="eraseAllData()" style="width:100%;">⌫ Erase all local data</button>
@@ -370,7 +401,7 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 
 <script>
 // ==============================================================================
-// HARDCODED GOOGLE OAUTH CLIENT ID
+// 1. HARDCODED GOOGLE OAUTH CLIENT ID
 // ==============================================================================
 const GOOGLE_CLIENT_ID = "322083319481-4khac8pgtoaf1viapvtccjnfrq6imp70.apps.googleusercontent.com";
 // ==============================================================================
@@ -598,6 +629,10 @@ function initGoogleAuth() {
             callback: (response) => {
                 if (response.error !== undefined) { throw (response); }
                 googleToken = response.access_token;
+                
+                document.getElementById('landingAuth').style.display = 'none';
+                document.getElementById('landingLoading').style.display = 'flex';
+                
                 fetchUserProfileAndDrive();
             }
         });
@@ -618,8 +653,6 @@ async function fetchUserProfileAndDrive() {
         const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: `Bearer ${googleToken}` } });
         googleUser = await res.json();
         
-        document.getElementById('authSetupArea').style.display = 'none';
-        document.getElementById('authActiveArea').style.display = 'flex';
         document.getElementById('profileTabName').textContent = googleUser.name;
         document.getElementById('profileTabEmail').textContent = googleUser.email;
         document.getElementById('profileTabImg').src = googleUser.picture;
@@ -631,10 +664,14 @@ async function fetchUserProfileAndDrive() {
         document.getElementById('sidebarProfPic').src = googleUser.picture;
         
         document.getElementById('btnForceSync').disabled = false;
+        
         await syncOrInitDrive();
+        enterApp(); 
         
     } catch (e) { 
-        console.error("Error fetching user profile", e);
+        console.error("Error fetching user", e);
+        document.getElementById('landingLoading').style.display = 'none';
+        document.getElementById('landingAuth').style.display = 'flex';
     }
 }
 
@@ -642,11 +679,12 @@ function handleGoogleSignOut() {
     if(googleToken) { google.accounts.oauth2.revoke(googleToken); }
     googleToken = null; googleUser = null;
     
-    document.getElementById('authSetupArea').style.display = 'block';
-    document.getElementById('authActiveArea').style.display = 'none';
+    document.getElementById('appContent').style.display = 'none';
+    document.getElementById('landingPage').style.display = 'flex';
+    document.getElementById('landingAuth').style.display = 'flex';
+    document.getElementById('landingLoading').style.display = 'none';
     
-    document.getElementById('sidebarName').textContent = "Expense Manager";
-    document.getElementById('sidebarEmail').textContent = "Offline Mode";
+    document.getElementById('sidebarName').textContent = "Loading...";
     document.getElementById('sidebarLogo').style.display = 'grid';
     document.getElementById('sidebarProfPic').style.display = 'none';
     
@@ -663,6 +701,7 @@ function updateSyncStatus(text, statusClass) {
 // Drive Check -> Pull OR Create
 async function syncOrInitDrive() {
     if(!googleToken) return;
+    document.getElementById('loadingText').textContent = "Checking Google Drive...";
     updateSyncStatus("Syncing from Cloud...", "syncing");
     
     try {
@@ -670,6 +709,7 @@ async function syncOrInitDrive() {
         const qData = await qRes.json();
         
         if(qData.files && qData.files.length > 0) {
+            document.getElementById('loadingText').textContent = "Downloading your data...";
             const dlRes = await fetch(`https://www.googleapis.com/drive/v3/files/${qData.files[0].id}?alt=media`, { headers: { Authorization: `Bearer ${googleToken}` } });
             const cloudData = await dlRes.json();
             if(cloudData && cloudData.accounts) {
@@ -681,6 +721,7 @@ async function syncOrInitDrive() {
             }
             updateSyncStatus("Synced securely", "active");
         } else {
+            document.getElementById('loadingText').textContent = "Creating secure storage folder...";
             await forceSyncToDrive(); 
         }
     } catch(e) { 
@@ -710,6 +751,13 @@ async function forceSyncToDrive() {
     } catch(e) { console.error("Drive Write Error", e); updateSyncStatus("Backup Failed", "danger"); }
 }
 function triggerAutoSync() { if(googleToken) forceSyncToDrive(); }
+
+function enterApp() {
+    document.getElementById('landingPage').style.display = 'none';
+    document.getElementById('appContent').style.display = 'grid';
+    window.dispatchEvent(new Event('resize'));
+    showTab('dashboard');
+}
 
 const tabTitles={dashboard:"Overview",transactions:"Transactions",accounts:"Accounts",transfers:"Transfers",investments:"Investments",debts:"Debts",planned:"Planned Payments",wishlist:"Wishlist",budgets:"Budgets",analytics:"Analytics",assistant:"AI Assistant",profile:"Profile & Sync"};
 function showTab(id){

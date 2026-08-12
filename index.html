@@ -179,7 +179,7 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 @media(max-width:700px){.financial-summary{grid-template-columns:1fr !important}.financial-summary > .card{height:auto !important}}
 </style>
 </head>
-<body data-product-version="V20.0-QA">
+<body data-product-version="V21.0-QA">
 
 <!-- Premium Landing Page (Forced Authentication) -->
 <div id="landingPage">
@@ -645,7 +645,8 @@ function toggleEnlargeChat() {
 function checkAiConnection() {
     let key = document.getElementById('aiApiKey').value || localStorage.getItem("expense-gemini-key") || "";
     let isValid = key.trim().length > 10;
-    document.getElementById('panelAiDot').classList.toggle('active', isValid);
+    let dot = document.getElementById('panelAiDot');
+    if(dot) dot.classList.toggle('active', isValid);
 }
 function saveApiKey() {
   const key = document.getElementById('aiApiKey').value.trim();
@@ -685,7 +686,7 @@ window.addEventListener('click', function(event) {
     }
 });
 
-// --- Google Drive Sync & Auth Logic (Auto-Login Fix) ---
+// --- Google Drive Sync & Auth Logic (Auto-Login Fix & Null Safe) ---
 let googleToken = null; let googleUser = null; let tokenClient = null;
 
 // Runs instantly on page load to check for a valid saved session
@@ -696,8 +697,8 @@ function checkAutoLogin() {
     if (token && expiry && Date.now() < parseInt(expiry)) {
         // Token is still valid, bypass landing page silently
         googleToken = token;
-        document.getElementById('landingAuth').style.display = 'none';
-        document.getElementById('landingLoading').style.display = 'flex';
+        let authDiv = document.getElementById('landingAuth'); if(authDiv) authDiv.style.display = 'none';
+        let loadDiv = document.getElementById('landingLoading'); if(loadDiv) loadDiv.style.display = 'flex';
         fetchUserProfileAndDrive();
     } else {
         // Expired or missing, clear old data just in case
@@ -723,8 +724,8 @@ function initGoogleAuth() {
                 localStorage.setItem('g_access_token', googleToken);
                 localStorage.setItem('g_token_expiry', Date.now() + (response.expires_in * 1000));
                 
-                document.getElementById('landingAuth').style.display = 'none';
-                document.getElementById('landingLoading').style.display = 'flex';
+                let authDiv = document.getElementById('landingAuth'); if(authDiv) authDiv.style.display = 'none';
+                let loadDiv = document.getElementById('landingLoading'); if(loadDiv) loadDiv.style.display = 'flex';
                 
                 fetchUserProfileAndDrive();
             }
@@ -750,11 +751,13 @@ async function fetchUserProfileAndDrive() {
         
         if(res.ok) {
             googleUser = await res.json();
-            document.getElementById('topName').textContent = googleUser.name;
-            document.getElementById('topProfPic').src = googleUser.picture;
-            document.getElementById('topUserArea').style.display = 'inline-block';
+            let picUrl = googleUser.picture || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
             
-            document.getElementById('btnForceSync').disabled = false;
+            let tn = document.getElementById('topName'); if(tn) tn.textContent = googleUser.name;
+            let tp = document.getElementById('topProfPic'); if(tp) tp.src = picUrl;
+            let ua = document.getElementById('topUserArea'); if(ua) ua.style.display = 'inline-block';
+            
+            let fs = document.getElementById('btnForceSync'); if(fs) fs.disabled = false;
         }
         
         await syncOrInitDrive();
@@ -780,35 +783,46 @@ function handleGoogleSignOut() {
     localStorage.removeItem('g_access_token');
     localStorage.removeItem('g_token_expiry');
     
-    document.getElementById('appContent').style.display = 'none';
-    document.getElementById('landingPage').style.display = 'flex';
-    document.getElementById('landingAuth').style.display = 'flex';
-    document.getElementById('landingLoading').style.display = 'none';
+    let ac = document.getElementById('appContent'); if(ac) ac.style.display = 'none';
+    let lp = document.getElementById('landingPage'); if(lp) lp.style.display = 'flex';
+    let la = document.getElementById('landingAuth'); if(la) la.style.display = 'flex';
+    let ll = document.getElementById('landingLoading'); if(ll) ll.style.display = 'none';
     
-    document.getElementById('topUserArea').style.display = 'none';
-    document.getElementById('btnForceSync').disabled = true;
+    let tu = document.getElementById('topUserArea'); if(tu) tu.style.display = 'none';
+    let fs = document.getElementById('btnForceSync'); if(fs) fs.disabled = true;
     updateSyncStatus("Offline Mode", "");
 }
 
+// SAFE UPDATER: Prevents crashes if element is missing from HTML
 function updateSyncStatus(text, statusClass) {
-    document.getElementById('syncStatusText').textContent = text;
-    document.getElementById('navSyncDot').className = "status-dot " + statusClass;
-    document.getElementById('tabSyncDot').className = "status-dot " + statusClass;
+    let st = document.getElementById('syncStatusText');
+    if(st) st.textContent = text;
+    
+    // Using querySelectorAll to safely update all status dots without crashing
+    document.querySelectorAll('.status-dot').forEach(dot => {
+        // Exclude the AI panel dot from sync updates
+        if(dot.id !== 'panelAiDot') {
+            dot.className = "status-dot " + statusClass;
+        }
+    });
 }
 
 // Drive Check -> Pull OR Create
 async function syncOrInitDrive() {
     if(!googleToken) return;
-    document.getElementById('loadingText').textContent = "Checking Google Drive...";
+    let loadTxt = document.getElementById('loadingText'); 
+    if(loadTxt) loadTxt.textContent = "Checking Google Drive...";
     updateSyncStatus("Syncing from Cloud...", "syncing");
     
     try {
-        const qRes = await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name="expense_manager_sync.json"', { headers: { Authorization: `Bearer ${googleToken}` } });
+        const qUrl = 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=' + encodeURIComponent('name="expense_manager_sync.json"');
+        const qRes = await fetch(qUrl, { headers: { Authorization: `Bearer ${googleToken}` } });
+        
         if(!qRes.ok) throw new Error("Drive query failed");
         const qData = await qRes.json();
         
         if(qData.files && qData.files.length > 0) {
-            document.getElementById('loadingText').textContent = "Downloading your data...";
+            if(loadTxt) loadTxt.textContent = "Downloading your data...";
             const dlRes = await fetch(`https://www.googleapis.com/drive/v3/files/${qData.files[0].id}?alt=media`, { headers: { Authorization: `Bearer ${googleToken}` } });
             const cloudData = await dlRes.json();
             if(cloudData && cloudData.accounts) {
@@ -820,7 +834,7 @@ async function syncOrInitDrive() {
             }
             updateSyncStatus("Synced securely", "active");
         } else {
-            document.getElementById('loadingText').textContent = "Creating secure storage folder...";
+            if(loadTxt) loadTxt.textContent = "Creating secure storage folder...";
             await forceSyncToDrive(); 
         }
     } catch(e) { 
@@ -839,7 +853,8 @@ async function forceSyncToDrive() {
         form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
         form.append('file', new Blob([fileContent], { type: 'application/json' }));
         
-        const qRes = await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name="expense_manager_sync.json"', { headers: { Authorization: `Bearer ${googleToken}` } });
+        const qUrl = 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=' + encodeURIComponent('name="expense_manager_sync.json"');
+        const qRes = await fetch(qUrl, { headers: { Authorization: `Bearer ${googleToken}` } });
         const qData = await qRes.json();
         
         let url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart'; let method = 'POST';
@@ -854,8 +869,8 @@ async function forceSyncToDrive() {
 function triggerAutoSync() { if(googleToken) forceSyncToDrive(); }
 
 function enterApp() {
-    document.getElementById('landingPage').style.display = 'none';
-    document.getElementById('appContent').style.display = 'grid';
+    let lp = document.getElementById('landingPage'); if(lp) lp.style.display = 'none';
+    let ac = document.getElementById('appContent'); if(ac) ac.style.display = 'grid';
     window.dispatchEvent(new Event('resize'));
     showTab('dashboard');
 }
@@ -867,9 +882,9 @@ function showTab(id){
      let el = document.getElementById(x);
      if(el) el.style.display = (x===id) ? "block" : "none";
  });
- pageTitle.textContent=tabTitles[id];
- document.getElementById("overviewActions").style.display = (id==="dashboard") ? "flex" : "none";
- document.getElementById("pageSub").style.display = (id==="dashboard") ? "block" : "none";
+ let pt = document.getElementById('pageTitle'); if(pt) pt.textContent=tabTitles[id];
+ let oa = document.getElementById("overviewActions"); if(oa) oa.style.display = (id==="dashboard") ? "flex" : "none";
+ let ps = document.getElementById("pageSub"); if(ps) ps.style.display = (id==="dashboard") ? "block" : "none";
  window.scrollTo({top:0,behavior:"smooth"});
 }
 function goHome(){showTab("dashboard")}
@@ -891,7 +906,8 @@ async function deleteProfile(){
     // Attempt to clear Google Drive Sync File
     if(googleToken) {
         try {
-            const qRes = await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name="expense_manager_sync.json"', { headers: { Authorization: `Bearer ${googleToken}` } });
+            const qUrl = 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=' + encodeURIComponent('name="expense_manager_sync.json"');
+            const qRes = await fetch(qUrl, { headers: { Authorization: `Bearer ${googleToken}` } });
             const qData = await qRes.json();
             if(qData.files && qData.files.length > 0) {
                 await fetch(`https://www.googleapis.com/drive/v3/files/${qData.files[0].id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${googleToken}` } });
@@ -951,19 +967,36 @@ setInterval(() => {
 }, 1000);
 
 if(localStorage.getItem("expense-dark")==="true")document.body.classList.add("dark");
+
+// --- Master Initialization Flow ---
 (async()=>{
-    await openDB();
-    ["date","transferDate","plannedDate","invDate","invMaturity","debtDate"].forEach(id=>{if(document.getElementById(id))document.getElementById(id).value=today()});
-    filterMonth.value=ym();
-    document.getElementById('autoLogoffSelect').value = localStorage.getItem('expense-autologoff') ?? '5';
-    await load();
+    try {
+        // 1. Must wait for Database to open completely before doing anything else
+        await openDB();
+        
+        // 2. Set UI Defaults
+        ["date","transferDate","plannedDate","invDate","invMaturity","debtDate"].forEach(id=>{
+            let el = document.getElementById(id);
+            if(el) el.value=today();
+        });
+        document.getElementById('filterMonth').value=ym();
+        document.getElementById('autoLogoffSelect').value = localStorage.getItem('expense-autologoff') ?? '5';
+        
+        // 3. Load UI Date Pickers
+        enhanceDates(document);
+        
+        // 4. Load Data from DB to State
+        await load();
+        
+        // 5. NOW Safe to check Auto-Login and trigger Sync
+        checkAutoLogin();
+        setTimeout(initGoogleAuth, 100);
+        
+    } catch(err) {
+        console.error("Initialization Error:", err);
+        let lt = document.getElementById('loadingText');
+        if(lt) lt.textContent = "Error loading database. Please clear browser data.";
+    }
 })();
 </script>
 </body></html>
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-    checkAutoLogin();
-    setTimeout(initGoogleAuth, 100);
-    enhanceDates(document);
-});
-</script>

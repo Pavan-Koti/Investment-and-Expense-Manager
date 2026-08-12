@@ -73,48 +73,63 @@ body.dark .landing-card { box-shadow:0 20px 50px rgba(0,0,0,0.4); }
 .spinner { border: 3px solid var(--hair); border-top: 3px solid var(--accent); border-radius: 50%; width: 28px; height: 28px; animation: spin 1s linear infinite; margin: 0 auto 16px; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-.app{max-width:1380px;margin:auto;padding:16px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;min-height:100vh}
+/* App Layout & Sidebar */
+.app{max-width:1380px;margin:auto;padding:16px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:20px;min-height:100vh}
 .sidebar{
  position:sticky;top:16px;height:calc(100vh - 32px);align-self:start;
  padding:10px 0; border:1px solid var(--hair);border-radius:16px;
  background:var(--surface);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
  box-shadow:var(--shadow);display:flex;flex-direction:column; z-index:10; overflow-y:auto;
 }
-.brand{padding:12px 20px 20px; cursor:pointer; border-bottom:1px solid var(--hair); margin-bottom:4px; display:flex; align-items:center; gap:10px;}
-.brandmark{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:600;background:var(--accent); overflow:hidden;}
-.brandname{font-size:15px;font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.brand{padding:14px 20px 20px; cursor:pointer; border-bottom:1px solid var(--hair); margin-bottom:8px; display:flex; align-items:center; gap:10px;}
+.brandmark{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:600;background:var(--accent); overflow:hidden; flex-shrink:0;}
+.brandname{font-size:16px;font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:165px;}
 
 /* Clear Navigation Segments */
-.nav{display:grid;gap:2px; padding-bottom:10px;}
-.navsection{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:22px 20px 8px;font-weight:650;}
+.nav{display:grid;gap:4px; padding-bottom:10px;}
+.navsection{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:18px 20px 6px;font-weight:650;}
 .navsection:first-child{padding-top:5px;}
-.nav button{border:0;background:transparent;text-align:left;width:calc(100% - 24px);padding:9px 12px 9px 16px;margin:2px 12px;color:var(--text);font-weight:500;display:flex;justify-content:space-between;align-items:center;border-radius:10px;cursor:pointer;transition:background .15s;}
+.nav button{border:0;background:transparent;text-align:left;width:calc(100% - 24px);padding:9px 12px 9px 16px;margin:0 12px;color:var(--text);font-weight:500;display:flex;justify-content:space-between;align-items:center;border-radius:10px;cursor:pointer;transition:background .15s;}
 .nav button:hover{background:var(--surface2);}
 .nav button.active{background:var(--accentSoft);color:var(--accent);font-weight:600;}
-
-.sidebarbottom{margin-top:auto;display:grid;gap:3px; padding:15px 12px 5px; border-top:1px solid var(--hair);}.sidebarbottom button,.sidebarbottom .filebtn{text-align:left; width:100%; border:none; padding:10px 14px;}
 
 .content{min-width:0;padding:5px 2px 30px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:4px 2px 22px; flex-wrap:wrap;}
 .top h1{margin:0;font-size:26px;line-height:1.1;font-weight:600;letter-spacing:-.035em}.sub{color:var(--muted);margin-top:5px;font-size:13px}
 
-/* Top Right User Profile Area */
+/* Top Right User Profile Area & Dropdown */
 .top-actions { display:flex; align-items:center; gap:15px; }
-.top-user-pill { display:flex; align-items:center; gap:10px; background:var(--surface); padding:4px 14px 4px 4px; border-radius:30px; border:1px solid var(--hair); box-shadow:var(--shadow); }
-.top-user-pill img { width:32px; height:32px; border-radius:50%; object-fit:cover; }
-.top-user-info { display:flex; flex-direction:column; line-height:1.2; }
-.top-user-info b { font-size:13px; font-weight:600; max-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.top-user-info span { font-size:11px; color:var(--muted); max-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.user-dropdown-container { position:relative; display:inline-block; }
+.top-user-pill { display:flex; align-items:center; gap:10px; background:var(--surface); padding:5px 12px 5px 5px; border-radius:30px; border:1px solid var(--hair); box-shadow:var(--shadow); cursor:pointer; transition:transform 0.15s, box-shadow 0.15s; user-select:none; }
+.top-user-pill:hover { box-shadow: 0 4px 15px rgba(0,0,0,.08); transform: translateY(-1px); }
+.top-user-pill:active { transform: translateY(0); }
+.top-user-pill img { width:34px; height:34px; border-radius:50%; object-fit:cover; }
+.top-user-pill b { font-size:13px; font-weight:600; max-width:140px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-right:2px; }
 
-/* AI Floating Panel */
-#aiPanel { display:none; position:fixed; top:75px; right:25px; width:360px; background:var(--surface); border:1px solid var(--hair); border-radius:18px; padding:18px; box-shadow:0 20px 40px rgba(0,0,0,.15); z-index:9999; backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); }
-#aiPanel.open { display:block; }
+.dropdown-content { display:none; position:absolute; right:0; top:100%; margin-top:10px; background:var(--surface); border:1px solid var(--hair); border-radius:14px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); min-width:160px; z-index:9000; backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); overflow:hidden; }
+.dropdown-content.show { display:flex; flex-direction:column; }
+.dropdown-content button { text-align:left; background:transparent; border:none; padding:12px 16px; width:100%; cursor:pointer; font-size:13px; font-weight:500; color:var(--text); transition:background 0.15s; }
+.dropdown-content button:hover { background:var(--surface2); }
+.dropdown-content .danger-item { color:var(--red); border-top:1px solid var(--hair); }
+
+/* Floating AI Panel (Bottom Right) */
+#aiPanel { display:none; position:fixed; bottom:25px; right:25px; width:360px; background:var(--surface); border:1px solid var(--hair); border-radius:18px; padding:18px; box-shadow:0 20px 40px rgba(0,0,0,.15); z-index:9999; backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); flex-direction:column; transform-origin:bottom right; }
+#aiPanel.open { display:flex; }
+#aiPanel.enlarged { width: 600px; height: 80vh; max-width: 92vw; bottom: 10vh; right: calc(50% - 300px); border-radius:24px; box-shadow:0 30px 60px rgba(0,0,0,.25); }
+.chat-window { display:flex; flex-direction:column; gap:12px; height:320px; overflow-y:auto; padding-right:5px; margin-bottom:10px; flex:1; }
+#aiPanel.enlarged .chat-window { height: auto; }
+.msg { padding:10px 14px; border-radius:14px; max-width:85%; font-size:13px; line-height:1.4;}
+.msg.user { background:var(--accent); color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
+.msg.ai { background:var(--surface2); border:1px solid var(--hair); align-self:flex-start; border-bottom-left-radius:4px;}
+.chat-input-area { display:flex; gap:8px; }
+.chat-input-area input { flex:1; }
+
+.status-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--muted); margin-left:8px; transition: background 0.3s;}
+.status-dot.active { background:var(--green); box-shadow: 0 0 6px var(--green); }
+.status-dot.syncing { background:var(--amber); box-shadow: 0 0 6px var(--amber); }
 
 .grid{display:grid;gap:10px;margin-bottom:18px}
-.card{
- background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:15px;
- box-shadow:var(--shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)
-}
+.card{ background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:15px; box-shadow:var(--shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px) }
 .hero{min-height:116px;display:flex;flex-direction:column;justify-content:space-between}.eyebrow{font-size:11px;color:var(--muted);font-weight:400}
 .hero .money{font-size:32px;letter-spacing:-.045em;font-weight:600;margin-top:5px}.hero .caption{font-size:11px;color:var(--muted)}
 .kpi .label{font-size:11px;color:var(--muted);font-weight:400}.kpi .value{font-size:21px;font-weight:500;margin-top:6px;letter-spacing:-.025em;white-space:nowrap}
@@ -123,10 +138,7 @@ body.dark .landing-card { box-shadow:0 20px 50px rgba(0,0,0,0.4); }
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.layout{display:grid;grid-template-columns:320px minmax(0,1fr);gap:12px}
 .form{display:grid;gap:10px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .field label{display:block;font-size:11px;font-weight:400;color:var(--muted);margin:0 0 5px 1px}
-input,select,textarea{
- width:100%;padding:9px 10px;border:1px solid var(--hair);border-radius:9px;
- background:var(--surface2);color:var(--text);outline:none;font-weight:400; height:36px; box-sizing:border-box;
-}
+input,select,textarea{ width:100%;padding:9px 10px;border:1px solid var(--hair);border-radius:9px; background:var(--surface2);color:var(--text);outline:none;font-weight:400; height:36px; box-sizing:border-box; }
 textarea{resize:vertical;min-height:72px; height:auto;}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accentSoft)}
 input[type="date"], input[type="month"]{display:none}
@@ -154,18 +166,9 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 .calendar{position:fixed;z-index:9999;width:292px;padding:12px;border:1px solid var(--hair);border-radius:14px;background:var(--surface);box-shadow:0 18px 55px rgba(0,0,0,.16);backdrop-filter:blur(25px);display:none; transform-origin: top left; transition: opacity 0.15s; opacity:0;}
 .calendar.open{display:block; opacity:1;}.calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.calmonth{font-size:13px;font-weight:550}.calnav{display:flex;gap:3px}.calnav button{padding:5px 8px;border-radius:8px}
 .calweek,.caldays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}.calweek span{font-size:9px;color:var(--muted);text-align:center;padding:3px 0}.calday{border:0;background:transparent;padding:6px 0;border-radius:7px;color:var(--text);font-size:11px;font-weight:400}.calday:hover{background:var(--accentSoft);color:var(--accent)}.calday.muted{color:var(--muted);opacity:.45}.calday.today{box-shadow:inset 0 0 0 1px var(--accent);color:var(--accent)}.calday.selected{background:var(--accent);color:#fff}.caltoday{width:100%;margin-top:7px;font-size:10px;padding:6px}
-.chat-window { display:flex; flex-direction:column; gap:12px; height:320px; overflow-y:auto; padding-right:5px; margin-bottom:10px; }
-.msg { padding:10px 14px; border-radius:14px; max-width:85%; font-size:13px; line-height:1.4;}
-.msg.user { background:var(--accent); color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
-.msg.ai { background:var(--surface2); border:1px solid var(--hair); align-self:flex-start; border-bottom-left-radius:4px;}
-.chat-input-area { display:flex; gap:8px; }
-.chat-input-area input { flex:1; }
-.status-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--muted); margin-left:8px; transition: background 0.3s;}
-.status-dot.active { background:var(--green); box-shadow: 0 0 6px var(--green); }
-.status-dot.syncing { background:var(--amber); box-shadow: 0 0 6px var(--amber); }
 
 @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto; z-index:1;}.nav{grid-template-columns:repeat(2,1fr)}.layout,.two{grid-template-columns:1fr}}
-@media(max-width:700px){.grid{grid-template-columns:1fr}.row,.filters{grid-template-columns:1fr}}@media(max-width:560px){.app{padding:9px}.top{margin-bottom:17px; flex-direction:column; align-items:flex-start;}.top-actions{width:100%; justify-content:space-between;}.calendar{width:285px}}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.row,.filters{grid-template-columns:1fr}}@media(max-width:560px){.app{padding:9px}.top{margin-bottom:17px; flex-direction:column; align-items:flex-start;}.top-actions{width:100%; justify-content:space-between;}.calendar{width:285px} #aiPanel.enlarged{width:95vw; right:2.5vw;} }
 .summary-grid{display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:12px !important;width:100% !important;margin:0 0 18px !important;align-items:stretch !important;}
 .summary-grid > .card{width:100% !important;min-width:0 !important;margin:0 !important;}
 .summary-grid .hero,.summary-grid .kpi{min-height:116px !important;height:100% !important;}
@@ -176,7 +179,7 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 @media(max-width:700px){.financial-summary{grid-template-columns:1fr !important}.financial-summary > .card{height:auto !important}}
 </style>
 </head>
-<body data-product-version="V19.0-QA">
+<body data-product-version="V20.0-QA">
 
 <!-- Premium Landing Page (Forced Authentication) -->
 <div id="landingPage">
@@ -212,6 +215,7 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
     <button type="button" class="navbtn" data-tab="transactions"><span>⇄&nbsp; Transactions</span></button>
     <button type="button" class="navbtn" data-tab="accounts"><span>◉&nbsp; Accounts</span></button>
     <button type="button" class="navbtn" data-tab="transfers"><span>⇉&nbsp; Transfers</span></button>
+    <button type="button" class="navbtn" data-tab="analytics"><span>📊&nbsp; Analytics</span></button>
     
     <div class="navsection">Growth & Liabilities</div>
     <button type="button" class="navbtn" data-tab="investments"><span>📈&nbsp; Investments</span></button>
@@ -221,10 +225,6 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
     <button type="button" class="navbtn" data-tab="planned"><span>◷&nbsp; Planned</span></button>
     <button type="button" class="navbtn" data-tab="wishlist"><span>☆&nbsp; Wishlist</span></button>
     <button type="button" class="navbtn" data-tab="budgets"><span>◒&nbsp; Budgets</span></button>
-    
-    <div class="navsection">System</div>
-    <button type="button" class="navbtn" data-tab="analytics"><span>📊&nbsp; Analytics</span></button>
-    <button type="button" class="navbtn" data-tab="settings"><span>⚙️&nbsp; Settings</span><span class="status-dot" id="navSyncDot" title="Drive Sync Status"></span></button>
   </nav>
 </aside>
 <main class="content">
@@ -243,24 +243,29 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
           ✨ Chat <span class="status-dot" id="panelAiDot"></span>
       </button>
       
-      <div id="topUserArea" style="display:none; align-items:center; gap:12px;">
-          <div class="top-user-pill">
+      <div id="topUserArea" class="user-dropdown-container" style="display:none;">
+          <div class="top-user-pill" onclick="toggleUserDropdown()">
               <img id="topProfPic" src="">
-              <div class="top-user-info">
-                  <b id="topName">User</b>
-                  <span id="topEmail">email@gmail.com</span>
-              </div>
+              <b id="topName">User</b>
+              <span style="font-size:10px; color:var(--muted); margin-left:2px; margin-right:4px;">▼</span>
           </div>
-          <button type="button" class="outline danger" style="padding:8px 16px; font-size:13px; font-weight:600; border-radius:20px;" onclick="handleGoogleSignOut()">Logout</button>
+          <!-- Dropdown Menu -->
+          <div id="userDropdown" class="dropdown-content">
+              <button type="button" onclick="showTab('settings'); toggleUserDropdown();">⚙️ Settings</button>
+              <button type="button" class="danger-item" onclick="handleGoogleSignOut(); toggleUserDropdown();">Log out</button>
+          </div>
       </div>
   </div>
 </div>
 
 <!-- Floating AI Panel -->
 <div id="aiPanel">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid var(--hair); padding-bottom:10px;">
      <h3 style="margin:0; font-size:16px;">✨ AI Assistant</h3>
-     <button type="button" class="outline" onclick="toggleAiPanel()" style="padding:2px 8px; border:none; background:transparent; font-size:16px;">✕</button>
+     <div style="display:flex; gap:2px;">
+         <button type="button" class="outline" onclick="toggleEnlargeChat()" style="padding:2px 8px; border:none; background:transparent; font-size:16px; cursor:pointer;" title="Enlarge Window">⤢</button>
+         <button type="button" class="outline" onclick="toggleAiPanel()" style="padding:2px 8px; border:none; background:transparent; font-size:16px; cursor:pointer;" title="Close">✕</button>
+     </div>
   </div>
   <div class="field" style="margin-bottom:10px;">
       <input id="aiApiKey" type="password" placeholder="Paste Gemini API Key..." onkeyup="saveApiKey()">
@@ -634,6 +639,9 @@ function toggleAiPanel() {
         checkAiConnection();
     }
 }
+function toggleEnlargeChat() {
+    document.getElementById('aiPanel').classList.toggle('enlarged');
+}
 function checkAiConnection() {
     let key = document.getElementById('aiApiKey').value || localStorage.getItem("expense-gemini-key") || "";
     let isValid = key.trim().length > 10;
@@ -663,6 +671,19 @@ async function sendAIPrompt() {
   } catch (err) { chat.innerHTML += `<div class="msg ai" style="color:var(--red)">Error contacting API. Check your key.</div>`; }
   chat.scrollTop = chat.scrollHeight;
 }
+
+// --- Top User Dropdown ---
+function toggleUserDropdown() {
+    document.getElementById('userDropdown').classList.toggle('show');
+}
+window.addEventListener('click', function(event) {
+    if (!event.target.closest('.user-dropdown-container')) {
+        let drops = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < drops.length; i++) {
+            if (drops[i].classList.contains('show')) drops[i].classList.remove('show');
+        }
+    }
+});
 
 // --- Google Drive Sync & Auth Logic (Auto-Login Fix) ---
 let googleToken = null; let googleUser = null; let tokenClient = null;
@@ -730,9 +751,8 @@ async function fetchUserProfileAndDrive() {
         if(res.ok) {
             googleUser = await res.json();
             document.getElementById('topName').textContent = googleUser.name;
-            document.getElementById('topEmail').textContent = googleUser.email;
             document.getElementById('topProfPic').src = googleUser.picture;
-            document.getElementById('topUserArea').style.display = 'flex';
+            document.getElementById('topUserArea').style.display = 'inline-block';
             
             document.getElementById('btnForceSync').disabled = false;
         }

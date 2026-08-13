@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Expense Manager — Personal Finance</title>
+<title>Personal OS — Your life, connected</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
@@ -324,6 +324,19 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
 .sub-burn .v{font-size:18px;font-weight:650;color:var(--accent);margin-top:3px}
 .sub-due{font-size:11px;font-weight:600;color:var(--muted)}
 .sub-due.soon{color:var(--red)}
+
+/* ===================== Time-past state + Vault ===================== */
+#timePastBadge{display:none;position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:600;background:var(--amber);color:#fff;font-size:12px;font-weight:650;padding:7px 16px;border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.28);letter-spacing:.01em}
+body.dark #timePastBadge{color:#1c1c1e}
+.app.time-past .content{outline:2px solid var(--amber);outline-offset:-4px;border-radius:14px;transition:outline-color .3s}
+.sub-over{color:var(--red)!important}
+.vault-row{display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--hair);border-radius:12px;background:var(--surface2)}
+.vault-row .grow{flex:1;min-width:0}
+.vault-name{font-weight:600;font-size:14px;word-break:break-word}
+.vault-meta{display:flex;align-items:center;gap:10px;margin-top:5px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.vault-when{font-weight:600}
+.vault-when.soon{color:var(--amber)}
+.vault-when.over{color:var(--red)}
 </style>
 </head>
 <body data-product-version="V31.0-FIXED">
@@ -331,9 +344,9 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
 <!-- Premium Landing Page -->
 <div id="landingPage">
     <div class="landing-card">
-        <div class="brand-icon">₹</div>
-        <h1>Expense Manager</h1>
-        <p>Your secure, intelligent personal finance planner. Sign in to seamlessly sync your portfolio across all your devices.</p>
+        <div class="brand-icon">◈</div>
+        <h1>Personal OS</h1>
+        <p>Your money, tasks, habits, journal and records — one private space, synced to your own Google Drive. Sign in to pick up where you left off.</p>
         
         <div id="landingAuth">
             <button type="button" class="google-btn-large" onclick="triggerGoogleLogin()">
@@ -380,8 +393,8 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
 <div class="app" id="appContent" style="display:none;">
 <aside class="sidebar">
   <div class="brand" onclick="goHome()" title="Go to Overview">
-    <div class="brandmark">₹</div>
-    <div class="brandname">Expense Manager</div>
+    <div class="brandmark">◈</div>
+    <div class="brandname">Personal OS</div>
   </div>
   <nav class="nav" id="sideNav">
     <div class="navsection">Home</div>
@@ -408,6 +421,7 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
     <button type="button" class="navbtn" data-tab="journal"><span>✎&nbsp; Journal</span></button>
     <button type="button" class="navbtn" data-tab="tasks"><span>☑&nbsp; Tasks</span></button>
     <button type="button" class="navbtn" data-tab="habits"><span>✦&nbsp; Habits</span></button>
+    <button type="button" class="navbtn" data-tab="vault"><span>🗄&nbsp; Vault</span></button>
   </nav>
 </aside>
 <main class="content">
@@ -753,6 +767,28 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
   </div>
 </div></section>
 
+<!-- Vault Tab (Renewals & Records) -->
+<section id="vault" style="display:none"><div class="layout">
+  <div class="card">
+    <h2>Add record</h2>
+    <p class="small">Renewals, policies and documents — vehicle insurance, service due, registration, passport, visa, warranties. Anything with an expiry surfaces on your Command Center radar.</p>
+    <form id="vaultForm" class="form">
+      <div class="field"><label>Name *</label><input id="vaultName" required placeholder="Activa insurance / Passport / TV warranty"></div>
+      <div class="field"><label>Category</label>
+        <select id="vaultCategory">
+          <option>Vehicle Insurance</option><option>Vehicle Service</option><option>Vehicle Registration</option>
+          <option>PUC / Emissions</option><option>Passport</option><option>Visa</option>
+          <option>Warranty</option><option>Policy</option><option>License</option><option>Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Renewal / expiry date *</label><input id="vaultDate" type="date" required></div>
+      <div class="field"><label>Reference / note</label><input id="vaultNote" maxlength="200" placeholder="Policy no., provider, amount, reminder..."></div>
+      <button class="primary">Add Record</button>
+    </form>
+  </div>
+  <div class="card"><h2>Records</h2><div id="vaultList" class="list"></div></div>
+</div></section>
+
 <div id="modal" class="modal"><div class="modalbox"><div class="modalhead"><h2 id="modalTitle"></h2><button type="button" onclick="closeModal()">×</button></div><div id="modalBody"></div></div></div>
 <!-- Butterfly Effect overlay -->
 <div id="butterflyOverlay" onclick="dismissButterfly()">
@@ -764,6 +800,8 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
     <div class="bf-hint">tap anywhere to continue</div>
   </div>
 </div>
+
+<div id="timePastBadge">◷ <span id="tpbText"></span></div>
 
 <!-- Time-Machine scrub dial -->
 <div id="timeMachine">
@@ -794,7 +832,7 @@ window.appPrompt = function(msg, defaultVal="") { return new Promise(resolve => 
 
 const EXPENSE_CAT=["Food","Groceries","Transport","Bills","Shopping","Health","Entertainment","Travel","Education","Home","Other"];
 const INCOME_CAT=["Salary","FD Interest","MIS Post","Dividends","Equity","Options","Other"];
-let state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[]};
+let state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[],vault:[]};
 const today=()=>new Date().toISOString().slice(0,10),ym=()=>today().slice(0,7);
 const money=n=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2}).format(n||0);
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
@@ -864,9 +902,9 @@ function render(){
     available.textContent=money(balSnapshot-plans.reduce((s,x)=>s+x.amount,0));
     updateTimeMachineLabels();
     
-    renderDynamicInsights(monthExp,plans); renderCategories(monthExp); renderUpcoming(); renderWishlist(); renderAccounts(); 
+    renderDynamicInsights(monthExp,plans,balSnapshot); renderCategories(monthExp); renderUpcoming(); renderWishlist(); renderAccounts(); 
     renderExpenses(); renderTransfers(); renderPlanned(); renderBudgets(); renderInvestments(); renderDebts(); renderAnalytics();
-    renderJournal(); renderTasks(); renderHabits(); renderSubscriptions(); renderHub();
+    renderJournal(); renderTasks(); renderHabits(); renderSubscriptions(); renderVault(); renderHub();
 }
 
 // Dashboard Tabs Switcher
@@ -878,7 +916,8 @@ function switchDashTab(e, tabId) {
 }
 
 // Phase 1: Dynamic Action Insights
-function renderDynamicInsights(monthExp, plans){
+function renderDynamicInsights(monthExp, plans, balNow){
+    if(balNow==null) balNow = totalBal();
     let out = ``;
     let foodSpend = monthExp.filter(x => x.category === 'Food' || x.category === 'Entertainment').reduce((s,x)=>s+x.amount,0);
     let totalPlanned = plans.reduce((s,x)=>s+x.amount,0);
@@ -897,7 +936,7 @@ function renderDynamicInsights(monthExp, plans){
     }
 
     // Trigger 2: Planned vs Balance
-    if(totalBal() - totalPlanned < 0) {
+    if(balNow - totalPlanned < 0) {
         out += `<div class="insight">
             <b>⚠️ Cashflow Warning</b>
             <p>Your upcoming planned payments (₹${totalPlanned}) exceed your current total balance. Please review your scheduled payments.</p>
@@ -953,11 +992,12 @@ function renderInvestments() { let rows=[...state.investments].sort((a,b)=>b.dat
 function renderDebts() { let rows=[...state.debts].sort((a,b)=>b.date.localeCompare(a.date)); debtList.innerHTML = rows.length ? rows.map(x=>`<div class="item"><div class="itemtop"><div><b>${esc(x.name)}</b><div class="itemmeta">${esc(x.type)} • APR: ${x.apr||0}%</div></div><strong class="danger">${money(x.amount)}</strong></div><div style="margin-top:8px"><button type="button" class="outline" onclick="editDebt('${x.id}')">Edit</button> <button type="button" class="danger outline" onclick="removeDebt('${x.id}')">Delete</button></div></div>`).join("") : "<div class='empty'>No active debts logged.</div>"; }
 
 function renderAnalytics() {
-    let totInc = state.expenses.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0); let totExp = state.expenses.filter(x=>x.type!=='income').reduce((s,x)=>s+x.amount,0); let totInv = state.investments.reduce((s,x)=>s+x.amount,0); let totDebt = state.debts.reduce((s,x)=>s+x.amount,0);
+    const _vm = viewMonth || ym(); const _cut = viewMonth ? _vm+'-31' : '9999-99'; const _ex = state.expenses.filter(x=>x.date<=_cut);
+    let totInc = _ex.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0); let totExp = _ex.filter(x=>x.type!=='income').reduce((s,x)=>s+x.amount,0); let totInv = state.investments.filter(x=>(x.date||'')<=_cut).reduce((s,x)=>s+x.amount,0); let totDebt = state.debts.filter(x=>(x.date||'')<=_cut).reduce((s,x)=>s+x.amount,0);
     document.getElementById("anaIncome").textContent = money(totInc); document.getElementById("anaExpense").textContent = money(totExp); document.getElementById("anaInvestments").textContent = money(totInv); document.getElementById("anaDebt").textContent = money(totDebt);
     let maxGrowth = Math.max(totInc, totExp, 1);
     document.getElementById("growthChart").innerHTML = `<div class="progress"><div class="progresshead"><span>Total Income</span><b>${money(totInc)}</b></div><div class="bar"><i style="width:${(totInc/maxGrowth)*100}%; background:var(--green)"></i></div></div><div class="progress" style="margin-top:15px"><div class="progresshead"><span>Total Expense</span><b>${money(totExp)}</b></div><div class="bar"><i style="width:${(totExp/maxGrowth)*100}%; background:var(--red)"></i></div></div><div class="small" style="margin-top:15px; text-align:right;">Net Flow: <b>${money(totInc - totExp)}</b></div>`;
-    let assets = totalBal() + totInv; let maxWorth = Math.max(assets, totDebt, 1);
+    let assets = (viewMonth ? totalBalAsOf(_vm) : totalBal()) + totInv; let maxWorth = Math.max(assets, totDebt, 1);
     document.getElementById("netWorthChart").innerHTML = `<div class="progress"><div class="progresshead"><span>Total Assets (Bal + Inv)</span><b>${money(assets)}</b></div><div class="bar"><i style="width:${(assets/maxWorth)*100}%; background:var(--accent)"></i></div></div><div class="progress" style="margin-top:15px"><div class="progresshead"><span>Total Liabilities (Debt)</span><b>${money(totDebt)}</b></div><div class="bar"><i style="width:${(totDebt/maxWorth)*100}%; background:var(--amber)"></i></div></div><div class="small" style="margin-top:15px; text-align:right;">Est Net Worth: <b>${money(assets - totDebt)}</b></div>`;
 }
 
@@ -1121,6 +1161,7 @@ async function sendAIPrompt() {
   const taskDataAI = openTasksAI.slice(0,6).map(function(t){return t.name+(t.dueDate?' (due '+t.dueDate+')':'');}).join('; ') || 'None';
   const habitDataAI = (state.habits||[]).map(function(h){return h.name+': '+habitStreak(h)+'d streak'+(habitDoneToday(h)?' (done today)':'');}).join('; ') || 'None';
   const subDataAI = (state.subscriptions||[]).map(function(x){return x.name+' \u20b9'+x.amount+'/'+x.cycle;}).join('; ') || 'None';
+  const vaultDataAI = (state.vault||[]).map(function(x){return x.name+' ('+x.category+') expires '+x.date;}).join('; ') || 'None';
   const lastJAI = [].concat(state.journal||[]).sort(function(a,b){return (b.date||'').localeCompare(a.date||'');})[0];
   const journalDataAI = lastJAI ? ('Last entry '+lastJAI.date+': mood '+lastJAI.mood+'/5, energy '+lastJAI.energy+'/5') : 'No entries yet';
   const systemInstruction = `You are Pavan's personal-OS copilot. You can see across finance, tasks, habits, journal and subscriptions, and you should connect the dots between them when it helps.
@@ -1128,6 +1169,7 @@ FINANCE \u2014 Accounts: ${accData} | Investments: ${invData} | Debts: ${debtDat
 OPEN TASKS: ${taskDataAI}
 HABITS: ${habitDataAI}
 SUBSCRIPTIONS: ${subDataAI}
+RECORDS/RENEWALS: ${vaultDataAI}
 JOURNAL: ${journalDataAI}
 Answer using ONLY this data. Be concise, plain text, and make cross-domain connections where useful (e.g. link spending to energy, or upcoming renewals to available balance).`;
 
@@ -1338,7 +1380,7 @@ function handleGoogleSignOut() {
     if(googleToken) { try{ google.accounts.oauth2.revoke(googleToken); }catch(e){} }
     googleToken = null; googleUser = null; driveFileId = null;
     localStorage.removeItem('g_access_token'); localStorage.removeItem('g_token_expiry');
-    state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[]};
+    state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[],vault:[]};
     let ac = document.getElementById('appContent'); if(ac) ac.style.display = 'none';
     let lp = document.getElementById('landingPage'); if(lp) lp.style.display = 'flex';
     let la = document.getElementById('landingAuth'); if(la) la.style.display = 'flex';
@@ -1406,7 +1448,7 @@ function enterApp() {
     showTab('hub');
 }
 
-const tabTitles={dashboard:"Overview",transactions:"Transactions",accounts:"Accounts",transfers:"Transfers",investments:"Investments",debts:"Debts",planned:"Planned Payments",wishlist:"Wishlist",budgets:"Budgets",analytics:"Analytics",settings:"Settings",journal:"Journal",tasks:"Tasks",hub:"Command Center",habits:"Habits",subscriptions:"Subscriptions"};
+const tabTitles={dashboard:"Overview",transactions:"Transactions",accounts:"Accounts",transfers:"Transfers",investments:"Investments",debts:"Debts",planned:"Planned Payments",wishlist:"Wishlist",budgets:"Budgets",analytics:"Analytics",settings:"Settings",journal:"Journal",tasks:"Tasks",hub:"Command Center",habits:"Habits",subscriptions:"Subscriptions",vault:"Vault"};
 function showTab(id){
  document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));
  Object.keys(tabTitles).forEach(x=> { let el = document.getElementById(x); if(el) el.style.display = (x===id) ? "block" : "none"; });
@@ -1426,7 +1468,7 @@ function toggleDark(){document.body.classList.toggle("dark");localStorage.setIte
 async function deleteProfile(){
     const ok = await appConfirm("Delete your profile and erase all data?\n\nThis will completely remove your local data and attempt to delete the cloud backup. This cannot be undone.");
     if(!ok) return; const phrase = await appPrompt('Type DELETE to confirm.'); if(phrase !== "DELETE"){ await appAlert("Nothing was erased."); return; }
-    state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[]};
+    state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[],vault:[]};
     if(googleToken) {
         try {
             const qUrl = 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=' + encodeURIComponent('name="expense_manager_sync.json"');
@@ -1594,6 +1636,12 @@ function timeMachineNow(){
     render();
 }
 function updateTimeMachineLabels(){
+    var app = document.getElementById('appContent');
+    if(app) app.classList.toggle('time-past', !!viewMonth);
+    var badge = document.getElementById('timePastBadge');
+    if(badge){ badge.style.display = viewMonth ? 'block' : 'none';
+        var tpb = document.getElementById('tpbText');
+        if(tpb && viewMonth) tpb.textContent = 'Viewing snapshot · ' + formatMonthApple(viewMonth) + ' · balances & analytics'; }
     var lbl = document.getElementById('tmLabel'); if(!lbl) return;
     if(!viewMonth){ lbl.textContent = 'LIVE · ' + formatMonthApple(ym()); lbl.classList.add('live'); }
     else { lbl.textContent = '⏳ ' + formatMonthApple(viewMonth); lbl.classList.remove('live'); }
@@ -1631,7 +1679,7 @@ function renderHabits(){
         var dots=''; for(var i=6;i>=0;i--){ dots += '<i class="'+((h.log||[]).includes(dayOffsetIso(-i))?'on':'')+'"></i>'; }
         return '<div class="habit">'
             + '<div class="grow"><div class="habit-name">'+esc(h.name)+'</div>'
-            + '<div class="streak'+(st?'':' cold')+'">'+(st?('\U0001F525 '+st+' day streak'):'No streak yet')+'</div>'
+            + '<div class="streak'+(st?'':' cold')+'">'+(st?('🔥 '+st+' day streak'):'No streak yet')+'</div>'
             + '<div class="dots7">'+dots+'</div></div>'
             + '<button class="habit-toggle'+(done?' on':'')+'" title="Mark today" onclick="markHabitToday(\''+h.id+'\')">'+(done?'\u2713':'\u25CB')+'</button>'
             + '<button class="jdel" title="Delete habit" onclick="removeHabit(\''+h.id+'\')">\u2715</button>'
@@ -1692,7 +1740,7 @@ subForm.onsubmit = async function(e){
 var platformMode = localStorage.getItem('platform-mode') || 'overview';
 function setPlatformMode(m){ platformMode = m; localStorage.setItem('platform-mode', m); renderHub(); }
 
-var MOOD_HUB = {1:'\U0001F622',2:'\U0001F615',3:'\U0001F610',4:'\U0001F642',5:'\U0001F604'};
+var MOOD_HUB = {1:'😢',2:'😕',3:'😐',4:'🙂',5:'😄'};
 var MODE_LAYOUT = {
     overview: { order:['finance','tasks','habits','radar','journal','ai'], wide:['finance'] },
     focus:    { order:['tasks','habits','journal','ai','radar','finance'], wide:['tasks','habits'] },
@@ -1728,7 +1776,7 @@ function renderHub(){
 
     // finance widget
     W.finance = '<div class="__wide__" data-w="finance">'
-        + '<div class="hub-card-h"><span>\U0001F4B0 Finances</span><button class="linklike" onclick="showTab(\'dashboard\')">Open \u2192</button></div>'
+        + '<div class="hub-card-h"><span>💰 Finances</span><button class="linklike" onclick="showTab(\'dashboard\')">Open \u2192</button></div>'
         + '<div class="hub-metrics">'
         + '<div><div class="hm-label">Balance'+(viewMonth?(' \u00b7 '+formatMonthApple(vm)):'')+'</div><div class="hm-val income">'+money(bal)+'</div></div>'
         + '<div><div class="hm-label">Spent '+formatMonthApple(vm)+'</div><div class="hm-val expense">'+money(spent)+'</div></div>'
@@ -1750,7 +1798,7 @@ function renderHub(){
     var habitRows = (state.habits||[]).slice(0,4).map(function(h){
         var st = habitStreak(h); var done = habitDoneToday(h);
         return '<div class="hub-row"><button class="mini-check'+(done?' on':'')+'" onclick="markHabitToday(\''+h.id+'\')" aria-label="Mark today">'+(done?'\u2713':'')+'</button>'
-            + '<div class="grow"><b>'+esc(h.name)+'</b><div class="sub">'+(st?('\U0001F525 '+st+'d streak'):'no streak yet')+'</div></div></div>';
+            + '<div class="grow"><b>'+esc(h.name)+'</b><div class="sub">'+(st?('🔥 '+st+'d streak'):'no streak yet')+'</div></div></div>';
     }).join('');
     W.habits = '<div class="__wide__" data-w="habits">'
         + '<div class="hub-card-h"><span>\u2726 Habits</span><button class="linklike" onclick="showTab(\'habits\')">Open \u2192</button></div>'
@@ -1762,19 +1810,21 @@ function renderHub(){
     var radar = [];
     (state.subscriptions||[]).forEach(function(x){ var d=nextRenewalDate(x); if(d && d<=horizon){ radar.push({name:x.name, amount:x.amount, date:d, kind:'Renewal'}); } });
     (state.planned||[]).filter(function(pp){ return !pp.paid && pp.date; }).forEach(function(pp){ var d=new Date(pp.date+'T00:00:00'); if(d>=t0 && d<=horizon){ radar.push({name:pp.name, amount:pp.amount, date:d, kind:'Payment'}); } });
+    (state.vault||[]).filter(function(v){ return v.date; }).forEach(function(v){ var d=new Date(v.date+'T00:00:00'); if(d<=horizon){ radar.push({name:v.name, amount:null, date:d, kind:v.category||'Record'}); } });
     radar.sort(function(a,b){ return a.date-b.date; });
-    var radarRows = radar.slice(0,5).map(function(r){
+    var radarRows = radar.slice(0,6).map(function(r){
         var du = daysUntil(r.date);
-        return '<div class="hub-row"><div class="grow"><b>'+esc(r.name)+'</b><div class="sub">'+r.kind+' \u00b7 '+(du===0?'today':du===1?'tomorrow':'in '+du+' days')+'</div></div><strong>'+money(r.amount)+'</strong></div>';
+        var when = du<0 ? ('overdue by '+(-du)+'d') : du===0 ? 'today' : du===1 ? 'tomorrow' : 'in '+du+' days';
+        return '<div class="hub-row"><div class="grow"><b>'+esc(r.name)+'</b><div class="sub'+(du<0?' sub-over':'')+'">'+esc(r.kind)+' \u00b7 '+when+'</div></div>'+(r.amount!=null?'<strong>'+money(r.amount)+'</strong>':'')+'</div>';
     }).join('');
     W.radar = '<div class="__wide__" data-w="radar">'
-        + '<div class="hub-card-h"><span>\U0001F4E1 Radar \u00b7 next 30 days</span><button class="linklike" onclick="showTab(\'subscriptions\')">Open \u2192</button></div>'
+        + '<div class="hub-card-h"><span>📡 Radar \u00b7 next 30 days</span><button class="linklike" onclick="showTab(\'subscriptions\')">Open \u2192</button></div>'
         + (radarRows || '<div class="hub-empty">Nothing due in the next month.</div>') + '</div>';
 
     // journal widget
     var lastJ = [].concat(state.journal||[]).sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); })[0];
     var journalBody = lastJ
-        ? '<div class="hub-row"><div class="grow"><b>'+(MOOD_HUB[lastJ.mood]||'\U0001F610')+' Mood '+lastJ.mood+'/5 \u00b7 Energy '+lastJ.energy+'/5</b><div class="sub">'+(lastJ.date?formatDateApple(lastJ.date):'')+'</div></div></div>'
+        ? '<div class="hub-row"><div class="grow"><b>'+(MOOD_HUB[lastJ.mood]||'😐')+' Mood '+lastJ.mood+'/5 \u00b7 Energy '+lastJ.energy+'/5</b><div class="sub">'+(lastJ.date?formatDateApple(lastJ.date):'')+'</div></div></div>'
           + (lastJ.date===today() ? '' : '<button class="btn linklike" style="align-self:flex-start" onclick="showTab(\'journal\')">Log today \u2192</button>')
         : '<div class="hub-empty">No entries yet. How did today feel?</div>';
     W.journal = '<div class="__wide__" data-w="journal">'
@@ -1794,10 +1844,46 @@ function renderHub(){
     }).join('');
 }
 
+
+// ===================== Vault (Renewals & Records) =====================
+function renderVault(){
+    var el = document.getElementById('vaultList'); if(!el) return;
+    var rows = [].concat(state.vault||[]).sort(function(a,b){ return (a.date||'\uffff').localeCompare(b.date||'\uffff'); });
+    var pill = {'Vehicle Insurance':'warn','Vehicle Service':'warn','Vehicle Registration':'warn','PUC / Emissions':'warn','Passport':'good','Visa':'good','Warranty':'good','Policy':'warn','License':'good','Other':'warn'};
+    el.innerHTML = rows.length ? rows.map(function(x){
+        var du = null, when = 'No date';
+        if(x.date){ var d=new Date(x.date+'T00:00:00'); var t=new Date(); t.setHours(0,0,0,0); du=Math.round((d-t)/86400000);
+            when = du<0 ? ('Expired '+(-du)+'d ago') : du===0 ? 'Due today' : du===1 ? 'Due tomorrow' : ('Renews in '+du+' days'); }
+        var cls = du==null ? '' : du<0 ? 'over' : du<=30 ? 'soon' : '';
+        return '<div class="vault-row"><div class="grow"><div class="vault-name">'+esc(x.name)+'</div>'
+            + '<div class="vault-meta"><span class="pill '+(pill[x.category]||'warn')+'">'+esc(x.category||'Other')+'</span>'
+            + '<span class="vault-when '+cls+'">'+when+(x.date?(' \u00b7 '+formatDateApple(x.date)):'')+'</span></div>'
+            + (x.note?('<div class="itemmeta" style="margin-top:6px">'+esc(x.note)+'</div>'):'')
+            + '<div style="margin-top:8px"><button type="button" class="outline" onclick="editVault(\''+x.id+'\')">Edit</button> <button type="button" class="danger outline" onclick="removeVault(\''+x.id+'\')">Delete</button></div>'
+            + '</div></div>';
+    }).join('') : "<div class='empty'>No records yet. Add vehicle insurance, a service date, passport or a warranty.</div>";
+}
+async function removeVault(id){ if(await appConfirm("Delete this record?")){ await del("vault", id); } }
+function editVault(id){
+    var x = state.vault.find(function(a){ return a.id===id; }); if(!x) return;
+    var cats = ['Vehicle Insurance','Vehicle Service','Vehicle Registration','PUC / Emissions','Passport','Visa','Warranty','Policy','License','Other'];
+    openModal("Edit Record", '<form id="editForm" class="form"><div class="field"><label>Name</label><input id="vName" required value="'+esc(x.name)+'"></div>'
+        + '<div class="field"><label>Category</label><select id="vCat">'+cats.map(function(c){return '<option '+(x.category===c?'selected':'')+'>'+c+'</option>';}).join('')+'</select></div>'
+        + '<div class="field"><label>Renewal / expiry date</label><input id="vDate" type="date" required value="'+(x.date||'')+'"></div>'
+        + '<div class="field"><label>Reference / note</label><input id="vNote" value="'+esc(x.note||'')+'"></div>'
+        + '<div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>');
+    editForm.onsubmit = async function(e){ e.preventDefault(); x.name=vName.value; x.category=vCat.value; x.date=vDate.value; x.note=vNote.value; await put("vault", x); closeModal(); };
+}
+vaultForm.onsubmit = async function(e){
+    e.preventDefault();
+    await put("vault", { id:uid(), name:vaultName.value.trim(), category:vaultCategory.value, date:vaultDate.value, note:vaultNote.value.trim(), created:Date.now() });
+    vaultForm.reset(); vaultDate.value = today();
+};
+
 // --- Master Initialization Flow ---
 (async()=>{
     try {
-        ["date","transferDate","plannedDate","invDate","invMaturity","debtDate","journalDate","taskDue","subNext"].forEach(id=>{ let el = document.getElementById(id); if(el) el.value=today(); });
+        ["date","transferDate","plannedDate","invDate","invMaturity","debtDate","journalDate","taskDue","subNext","vaultDate"].forEach(id=>{ let el = document.getElementById(id); if(el) el.value=today(); });
         document.getElementById('filterMonth').value=ym();
         document.getElementById('autoLogoffSelect').value = localStorage.getItem('expense-autologoff') ?? '5';
         enhanceDates(document);

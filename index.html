@@ -214,7 +214,7 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
 @media(max-width:700px){.financial-summary{grid-template-columns:1fr !important}.financial-summary > .card{height:auto !important}}
 </style>
 </head>
-<body data-product-version="V29.0-QA-FIXED">
+<body data-product-version="V30.0-PROD">
 
 <!-- Premium Landing Page -->
 <div id="landingPage">
@@ -1007,7 +1007,7 @@ function initGoogleAuth() {
                 if (response.error !== undefined) { 
                     let authDiv = document.getElementById('landingAuth'); if(authDiv) authDiv.style.display = 'flex';
                     let loadDiv = document.getElementById('landingLoading'); if(loadDiv) loadDiv.style.display = 'none';
-                    return appAlert("Sign In Error: " + response.error);
+                    return alert("Sign In Error: " + response.error);
                 }
                 googleToken = response.access_token;
                 localStorage.setItem('g_access_token', googleToken); localStorage.setItem('g_token_expiry', Date.now() + (response.expires_in * 1000));
@@ -1016,30 +1016,40 @@ function initGoogleAuth() {
                 fetchUserProfileAndDrive();
             },
             error_callback: (err) => {
+                console.error("GIS Error:", err);
                 let authDiv = document.getElementById('landingAuth'); if(authDiv) authDiv.style.display = 'flex';
                 let loadDiv = document.getElementById('landingLoading'); if(loadDiv) loadDiv.style.display = 'none';
-                appAlert("Popup was closed or blocked. Error type: " + err.type);
+                alert("Google Sign-In failed or popup was blocked. Error: " + (err.type || err.message || JSON.stringify(err)));
             }
         });
     } catch(e) { console.error("GIS init failed", e); }
 }
 
-window.triggerGoogleLogin = async () => {
+// Synchronous execution avoids Chrome/Safari dropping the user gesture trust token
+window.triggerGoogleLogin = function() {
+    console.log("Login button clicked.");
     if (window.location.protocol === 'file:') {
-        return appAlert("Google Sign-In blocked. You cannot run this directly from a local file:// URL. Please open this file through a local web server (like VS Code Live Server).");
+        alert("Security Block: Google Sign-In cannot run from a local file:// URL. Please host this on GitHub Pages, localhost, or a live server.");
+        return;
     }
-    if (typeof google === 'undefined') {
-        return appAlert("Google Sign-In library is blocked. Please disable your adblocker or strict tracking protection for this page and refresh.");
+    if (typeof google === 'undefined' || !google.accounts) {
+        alert("Security Block: The Google Sign-In library failed to load. Please disable adblockers or strict tracking protection and refresh the page.");
+        return;
     }
-    if(!tokenClient) { 
-        initGoogleAuth(); 
-        if(!tokenClient) return appAlert("Google Sign-In is still initializing. Please wait a moment and click again."); 
+    if (!tokenClient) {
+        initGoogleAuth();
+        if (!tokenClient) {
+            alert("Google Sign-In is initializing. Please wait one second and try again.");
+            return;
+        }
     }
     
     try {
+        console.log("Requesting access token from Google...");
         tokenClient.requestAccessToken({prompt: 'consent'});
     } catch(e) {
-        appAlert("Failed to open login popup. " + e.message);
+        console.error("Popup Error:", e);
+        alert("Failed to open login popup. Your browser might be strictly blocking it.");
     }
 };
 
@@ -1057,7 +1067,6 @@ async function fetchUserProfileAndDrive() {
             let fs = document.getElementById('btnForceSync'); if(fs) fs.disabled = false;
         }
         await syncOrInitDrive();
-        // Route to briefing check instead of direct enterApp
         checkMorningBriefing(); 
     } catch (e) { 
         if(e.message === "AuthError") { handleGoogleSignOut(); } else { updateSyncStatus("Offline - Network Error", "danger"); enterApp(); }

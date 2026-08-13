@@ -135,7 +135,13 @@ body.dark .landing-card { box-shadow:0 20px 50px rgba(0,0,0,0.4); }
 .kpi .label{font-size:11px;color:var(--muted);font-weight:400}.kpi .value{font-size:21px;font-weight:500;margin-top:6px;letter-spacing:-.025em;white-space:nowrap}
 .income{color:var(--green)}.expense{color:var(--red)}.warning{color:var(--amber)}
 .sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:11px}.sectionhead h2{font-size:16px;letter-spacing:-.02em;margin:0;font-weight:550}.sectionhead .small{max-width:55%;text-align:right}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.layout{display:grid;grid-template-columns:320px minmax(0,1fr);gap:12px}
+
+/* Custom dashboard card scaling to match sidebar height */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.two .card { min-height: 340px; display: flex; flex-direction: column; }
+.two .card > div { flex: 1; overflow-y: auto; padding-right: 4px; margin-top: 5px; }
+
+.layout{display:grid;grid-template-columns:320px minmax(0,1fr);gap:12px}
 .form{display:grid;gap:10px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .field label{display:block;font-size:11px;font-weight:400;color:var(--muted);margin:0 0 5px 1px}
 input,select,textarea{ width:100%;padding:9px 10px;border:1px solid var(--hair);border-radius:9px; background:var(--surface2);color:var(--text);outline:none;font-weight:400; height:36px; box-sizing:border-box; }
@@ -179,7 +185,7 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 @media(max-width:700px){.financial-summary{grid-template-columns:1fr !important}.financial-summary > .card{height:auto !important}}
 </style>
 </head>
-<body data-product-version="V24.0-QA">
+<body data-product-version="V25.0-QA">
 
 <!-- Premium Landing Page (Forced Authentication) -->
 <div id="landingPage">
@@ -277,9 +283,10 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
       <input type="text" id="aiInput" placeholder="Ask about your budget or investments..." onkeydown="if(event.key==='Enter') sendAIPrompt()">
       <button type="button" class="primary" onclick="sendAIPrompt()">Send</button>
   </div>
-  <div class="filters" style="margin-top:10px; grid-template-columns:1fr 1fr;">
+  <div class="filters" style="margin-top:10px; grid-template-columns:1fr 1fr 1fr; gap: 5px;">
     <button type="button" onclick="document.getElementById('aiInput').value='Analyze my spending habits this month'; sendAIPrompt();" style="font-size:10px;">Analyze Spending</button>
     <button type="button" onclick="document.getElementById('aiInput').value='Give me a breakdown of my investments'; sendAIPrompt();" style="font-size:10px;">Check Investments</button>
+    <button type="button" class="danger outline" onclick="clearAIChat()" style="font-size:10px;">Clear Chat</button>
   </div>
 </div>
 
@@ -695,6 +702,11 @@ function checkAiConnection() {
 function saveApiKey() {
   const key = document.getElementById('aiApiKey').value.trim();
   if(key) { localStorage.setItem("expense-gemini-key", key); checkAiConnection(); }
+}
+async function clearAIChat() {
+    if(await appConfirm("Clear all chat history?")) {
+        document.getElementById('aiChat').innerHTML = `<div class="msg ai">Hello! I am your AI financial assistant. I have access to a secure, read-only snapshot of your balances, investments, and expenses. How can I help you plan today?</div>`;
+    }
 }
 async function sendAIPrompt() {
   const apiKey = localStorage.getItem("expense-gemini-key");

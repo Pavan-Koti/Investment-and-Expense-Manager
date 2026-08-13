@@ -214,7 +214,7 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
 @media(max-width:700px){.financial-summary{grid-template-columns:1fr !important}.financial-summary > .card{height:auto !important}}
 </style>
 </head>
-<body data-product-version="V31.0-FIXED">
+<body data-product-version="V30.0-PROD">
 
 <!-- Premium Landing Page -->
 <div id="landingPage">
@@ -700,13 +700,13 @@ function renderTransfers(){let rows=[...state.transfers].sort((a,b)=>b.date.loca
 function renderPlanned(){let rows=[...state.planned].sort((a,b)=>a.date.localeCompare(b.date));plannedList.innerHTML=rows.length?rows.map(x=>`<div class="item"><div class="itemtop"><b>${esc(x.name)}</b><strong>${money(x.amount)}</strong></div><div class="itemmeta">Due ${x.date} •${x.frequency}</div><div style="margin-top:8px"><button type="button" class="outline" onclick="togglePlan('${x.id}')">${x.paid?"Mark unpaid":"Mark paid"}</button> <button type="button" class="outline" onclick="editPlan('${x.id}')">Edit</button> <button type="button" class="danger outline" onclick="removePlan('${x.id}')">Delete</button></div></div>`).join(""):"<div class='empty'>No plans.</div>"}
 function renderBudgets(){let m=ym(), active=state.budgets.filter(b=>b.month===m); if(!active.length){budgetList.innerHTML="<div class='empty'>No budgets set for this month.</div>";return} budgetList.innerHTML=active.map(b=>{let spent=state.expenses.filter(e=>e.date.startsWith(m)&&e.category===b.category&&e.type!=='income').reduce((s,e)=>s+e.amount,0);let pct=Math.min(100,spent/b.amount*100);return `<div class="item"><div class="itemtop"><b>${esc(b.category)}</b></div><div class="progress"><div class="progresshead"><span>Plan ${money(b.amount)}</span><b>Used ${money(spent)}</b></div><div class="bar"><i style="width:${pct}%"></i></div></div><div style="margin-top:8px"><button type="button" class="outline" onclick="editBudget('${b.id}')">Edit</button> <button type="button" class="danger outline" onclick="removeBudget('${b.id}')">Delete</button></div></div>`;}).join("");}
 function renderInvestments() { let rows=[...state.investments].sort((a,b)=>b.date.localeCompare(a.date)); investList.innerHTML = rows.length ? rows.map(x=>`<div class="item"><div class="itemtop"><div><b>${esc(x.name)}</b><div class="itemmeta">${esc(x.type)} • Invested ${x.date}</div></div><strong>${money(x.amount)}</strong></div>${x.maturity?`<div class="itemmeta">Maturity: ${x.maturity}</div>`:''}<div style="margin-top:8px"><button type="button" class="outline" onclick="editInvestment('${x.id}')">Edit</button> <button type="button" class="danger outline" onclick="removeInvestment('${x.id}')">Delete</button></div></div>`).join("") : "<div class='empty'>No active investments logged.</div>"; }
-function renderDebts() { let rows=[...state.debts].sort((a,b)=>b.date.localeCompare(a.date)); debtList.innerHTML = rows.length ? rows.map(x=>`<div class="item"><div class="itemtop"><div><b>${esc(x.name)}</b><div class="itemmeta">${esc(x.type)} • APR: ${x.apr\vert{}\vert{}0}\%</div></div><strong class="danger">${money(x.amount)}</strong></div><div style="margin-top:8px"><button type="button" class="outline" onclick="editDebt('${x.id}')">Edit</button> <button type="button" class="danger outline" onclick="removeDebt('${x.id}')">Delete</button></div></div>`).join("") : "<div class='empty'>No active debts logged.</div>"; }
+function renderDebts() { let rows=[...state.debts].sort((a,b)=>b.date.localeCompare(a.date)); debtList.innerHTML = rows.length ? rows.map(x=>`<div class="item"><div class="itemtop"><div><b>${esc(x.name)}</b><div class="itemmeta">${esc(x.type)} • APR: ${x.apr||0}%</div></div><strong class="danger">${money(x.amount)}</strong></div><div style="margin-top:8px"><button type="button" class="outline" onclick="editDebt('${x.id}')">Edit</button> <button type="button" class="danger outline" onclick="removeDebt('${x.id}')">Delete</button></div></div>`).join("") : "<div class='empty'>No active debts logged.</div>"; }
 
 function renderAnalytics() {
     let totInc = state.expenses.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0); let totExp = state.expenses.filter(x=>x.type!=='income').reduce((s,x)=>s+x.amount,0); let totInv = state.investments.reduce((s,x)=>s+x.amount,0); let totDebt = state.debts.reduce((s,x)=>s+x.amount,0);
     document.getElementById("anaIncome").textContent = money(totInc); document.getElementById("anaExpense").textContent = money(totExp); document.getElementById("anaInvestments").textContent = money(totInv); document.getElementById("anaDebt").textContent = money(totDebt);
     let maxGrowth = Math.max(totInc, totExp, 1);
-    document.getElementById("growthChart").innerHTML = `<div class="progress"><div class="progresshead"><span>Total Income</span><b>${money(totInc)}</b></div><div class="bar"><i style="width:${(totInc/maxGrowth)*100}\%; background:var(--green)"></i></div></div><div class="progress" style="margin-top:15px"><div class="progresshead"><span>Total Expense</span><b>${money(totExp)}</b></div><div class="bar"><i style="width:${(totExp/maxGrowth)*100}\%; background:var(--red)"></i></div></div><div class="small" style="margin-top:15px; text-align:right;">Net Flow: <b>${money(totInc - totExp)}</b></div>`;
+    document.getElementById("growthChart").innerHTML = `<div class="progress"><div class="progresshead"><span>Total Income</span><b>${money(totInc)}</b></div><div class="bar"><i style="width:${(totInc/maxGrowth)*100}%; background:var(--green)"></i></div></div><div class="progress" style="margin-top:15px"><div class="progresshead"><span>Total Expense</span><b>${money(totExp)}</b></div><div class="bar"><i style="width:${(totExp/maxGrowth)*100}%; background:var(--red)"></i></div></div><div class="small" style="margin-top:15px; text-align:right;">Net Flow: <b>${money(totInc - totExp)}</b></div>`;
     let assets = totalBal() + totInv; let maxWorth = Math.max(assets, totDebt, 1);
     document.getElementById("netWorthChart").innerHTML = `<div class="progress"><div class="progresshead"><span>Total Assets (Bal + Inv)</span><b>${money(assets)}</b></div><div class="bar"><i style="width:${(assets/maxWorth)*100}%; background:var(--accent)"></i></div></div><div class="progress" style="margin-top:15px"><div class="progresshead"><span>Total Liabilities (Debt)</span><b>${money(totDebt)}</b></div><div class="bar"><i style="width:${(totDebt/maxWorth)*100}%; background:var(--amber)"></i></div></div><div class="small" style="margin-top:15px; text-align:right;">Est Net Worth: <b>${money(assets - totDebt)}</b></div>`;
 }
@@ -746,10 +746,10 @@ function editExpense(id){
 function editAccount(id){let x=state.accounts.find(a=>a.id===id);openModal("Edit Account",`<form id="editForm" class="form"><div class="field"><label>Name</label><input id="aName" required value="${esc(x.name)}"></div><div class="field"><label>Type</label><select id="aType"><option ${x.type==="Bank"?"selected":""}>Bank</option><option ${x.type==="Cash"?"selected":""}>Cash</option><option ${x.type==="Credit Card"?"selected":""}>Credit Card</option><option ${x.type==="Investment"?"selected":""}>Investment</option><option ${x.type==="Other"?"selected":""}>Other</option></select></div><div class="field"><label>Opening Balance</label><input id="aOpen" type="number" step=".01" value="${x.opening}"></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); editForm.onsubmit=async e=>{e.preventDefault();x.name=aName.value;x.type=aType.value;x.opening=+aOpen.value;await put("accounts",x);closeModal();}}
 function editTransfer(id){let x=state.transfers.find(a=>a.id===id);openModal("Edit Transfer",`<form id="editForm" class="form"><div class="row"><div class="field"><label>Amount</label><input id="tAmt" type="number" step=".01" required value="${x.amount}"></div><div class="field"><label>Date</label><input id="tDate" type="date" required value="${x.date}"></div></div><div class="field"><label>From Account</label><select id="tFrom">${options(state.accounts)}</select></div><div class="field"><label>To Account</label><select id="tTo">${options(state.accounts)}</select></div><div class="field"><label>Note</label><input id="tNote" value="${esc(x.note)}"></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); tFrom.value=x.from; tTo.value=x.to; editForm.onsubmit=async e=>{e.preventDefault(); if(tFrom.value===tTo.value){return await appAlert("Accounts must be different");} x.amount=+tAmt.value;x.date=tDate.value;x.from=tFrom.value;x.to=tTo.value;x.note=tNote.value;await put("transfers",x);closeModal();}}
 function editPlan(id){let x=state.planned.find(a=>a.id===id);openModal("Edit Planned Payment",`<form id="editForm" class="form"><div class="field"><label>Name</label><input id="pName" required value="${esc(x.name)}"></div><div class="row"><div class="field"><label>Amount</label><input id="pAmt" type="number" step=".01" required value="${x.amount}"></div><div class="field"><label>Due Date</label><input id="pDate" type="date" required value="${x.date}"></div></div><div class="field"><label>Frequency</label><select id="pFreq"><option ${x.frequency==="One-off"?"selected":""}>One-off</option><option ${x.frequency==="Monthly"?"selected":""}>Monthly</option><option ${x.frequency==="Quarterly"?"selected":""}>Quarterly</option><option ${x.frequency==="Yearly"?"selected":""}>Yearly</option></select></div><div class="field"><label>Category</label><input id="pCat" value="${esc(x.category)}" required></div><div class="field"><label>Account</label><select id="pAcc">${options(state.accounts)}</select></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); pAcc.value=x.accountId||""; editForm.onsubmit=async e=>{e.preventDefault();x.name=pName.value;x.amount=+pAmt.value;x.date=pDate.value;x.frequency=pFreq.value;x.category=pCat.value;x.accountId=pAcc.value;await put("planned",x);closeModal();}}
-function editWishlist(id){let x=state.wishlist.find(a=>a.id===id);openModal("Edit Wishlist",`<form id="editForm" class="form"><div class="field"><label>Item</label><input id="wName" required value="${esc(x.name)}"></div><div class="row"><div class="field"><label>Cost</label><input id="wAmt" type="number" step=".01" required value="${x.amount}"></div><div class="field"><label>Priority</label><select id="wPri"><option ${x.priority==="High"?"selected":""}>High</option><option ${x.priority==="Medium"?"selected":""}>Medium</option><option ${x.priority==="Low"?"selected":""}>Low</option></select></div></div><div class="field"><label>Target Date</label><input id="wDate" type="date" value="${x.targetDate\vert{}\vert{}""}"></div><div class="field"><label>Note</label><input id="wNote" value="${esc(x.note||"")}"></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); editForm.onsubmit=async e=>{e.preventDefault();x.name=wName.value;x.amount=+wAmt.value;x.priority=wPri.value;x.targetDate=wDate.value;x.note=wNote.value;await put("wishlist",x);closeModal();}}
+function editWishlist(id){let x=state.wishlist.find(a=>a.id===id);openModal("Edit Wishlist",`<form id="editForm" class="form"><div class="field"><label>Item</label><input id="wName" required value="${esc(x.name)}"></div><div class="row"><div class="field"><label>Cost</label><input id="wAmt" type="number" step=".01" required value="${x.amount}"></div><div class="field"><label>Priority</label><select id="wPri"><option ${x.priority==="High"?"selected":""}>High</option><option ${x.priority==="Medium"?"selected":""}>Medium</option><option ${x.priority==="Low"?"selected":""}>Low</option></select></div></div><div class="field"><label>Target Date</label><input id="wDate" type="date" value="${x.targetDate||""}"></div><div class="field"><label>Note</label><input id="wNote" value="${esc(x.note||"")}"></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); editForm.onsubmit=async e=>{e.preventDefault();x.name=wName.value;x.amount=+wAmt.value;x.priority=wPri.value;x.targetDate=wDate.value;x.note=wNote.value;await put("wishlist",x);closeModal();}}
 function editBudget(id){let x=state.budgets.find(a=>a.id===id);openModal("Edit Budget",`<form id="editForm" class="form"><div class="field"><label>Category</label><input id="bCat" value="${esc(x.category)}" required></div><div class="field"><label>Limit</label><input id="bAmt" type="number" step=".01" required value="${x.amount}"></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); editForm.onsubmit=async e=>{e.preventDefault();x.category=bCat.value;x.amount=+bAmt.value;await put("budgets",x);closeModal();}}
 function editInvestment(id){let x=state.investments.find(a=>a.id===id);openModal("Edit Investment",`<form id="editForm" class="form"><div class="field"><label>Name</label><input id="iName" required value="${esc(x.name)}"></div><div class="row"><div class="field"><label>Amount</label><input id="iAmt" type="number" step=".01" required value="${x.amount}"></div><div class="field"><label>Date</label><input id="iDate" type="date" required value="${x.date}"></div></div><div class="field"><label>Type</label><input id="iType" required value="${esc(x.type)}"></div><div class="field"><label>Maturity</label><input id="iMat" type="date" value="${x.maturity||""}"></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); editForm.onsubmit=async e=>{e.preventDefault();x.name=iName.value;x.amount=+iAmt.value;x.date=iDate.value;x.type=iType.value;x.maturity=iMat.value;await put("investments",x);closeModal();}}
-function editDebt(id){let x=state.debts.find(a=>a.id===id);openModal("Edit Debt",`<form id="editForm" class="form"><div class="field"><label>Name</label><input id="dName" required value="${esc(x.name)}"></div><div class="row"><div class="field"><label>Amount</label><input id="dAmt" type="number" step=".01" required value="${x.amount}"></div><div class="field"><label>APR \%</label><input id="dApr" type="number" step=".01" value="${x.apr||0}"></div></div><div class="row"><div class="field"><label>Date</label><input id="dDate" type="date" required value="${x.date}"></div><div class="field"><label>Type</label><input id="dType" required value="${esc(x.type)}"></div></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); editForm.onsubmit=async e=>{e.preventDefault();x.name=dName.value;x.amount=+dAmt.value;x.apr=+dApr.value;x.date=dDate.value;x.type=dType.value;await put("debts",x);closeModal();}}
+function editDebt(id){let x=state.debts.find(a=>a.id===id);openModal("Edit Debt",`<form id="editForm" class="form"><div class="field"><label>Name</label><input id="dName" required value="${esc(x.name)}"></div><div class="row"><div class="field"><label>Amount</label><input id="dAmt" type="number" step=".01" required value="${x.amount}"></div><div class="field"><label>APR %</label><input id="dApr" type="number" step=".01" value="${x.apr||0}"></div></div><div class="row"><div class="field"><label>Date</label><input id="dDate" type="date" required value="${x.date}"></div><div class="field"><label>Type</label><input id="dType" required value="${esc(x.type)}"></div></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); editForm.onsubmit=async e=>{e.preventDefault();x.name=dName.value;x.amount=+dAmt.value;x.apr=+dApr.value;x.date=dDate.value;x.type=dType.value;await put("debts",x);closeModal();}}
 
 function openModal(t,b){modalTitle.textContent=t;modalBody.innerHTML=b;modal.classList.add("open")}
 function closeModal(){modal.classList.remove("open")}
@@ -804,7 +804,7 @@ function makeMonthPicker(input){
  function render(){
   let cells = CAL_MONTHS.map((m, i) => {
      let val = viewYear + "-" + String(i+1).padStart(2, '0'); let cls = "calday" + (val === ym() ? " today" : "") + (val === selected ? " selected" : "");
-     return `<button type="button" class="${cls}" data-val="${val}" style="width:100\%; padding:12px 0;">${m.slice(0,3)}</button>`;
+     return `<button type="button" class="${cls}" data-val="${val}" style="width:100%; padding:12px 0;">${m.slice(0,3)}</button>`;
   });
   pop.innerHTML=`<div class="calhead"><b class="calmonth">${viewYear}</b><div class="calnav"><button type="button" data-prev>‹</button><button type="button" data-next>›</button></div></div><div style="display:grid; grid-template-columns:repeat(3,1fr); gap:5px;">${cells.join("")}</div><button type="button" class="caltoday" data-today>Current Month</button>`;
   pop.querySelector("[data-prev]").onclick=(e)=>{e.stopPropagation(); viewYear--; render()};
@@ -869,7 +869,7 @@ Data Snapshot:
 Accounts: ${accData}
 Investments: ${invData}
 Debts: ${debtData}
-Bal: ₹${context.totalBalance} | Spent: ₹${context.spentThisMonth} \vert{} Earned: ₹${context.earnedThisMonth}.
+Bal: ₹${context.totalBalance} | Spent: ₹${context.spentThisMonth} | Earned: ₹${context.earnedThisMonth}.
 Answer accurately based ONLY on this data. Be concise, plain text only.`;
 
   try {
@@ -1002,7 +1002,7 @@ function initGoogleAuth() {
     try {
         tokenClient = google.accounts.oauth2.initTokenClient({
             client_id: GOOGLE_CLIENT_ID,
-            scope: '[https://www.googleapis.com/auth/drive.appdata](https://www.googleapis.com/auth/drive.appdata) [https://www.googleapis.com/auth/userinfo.profile](https://www.googleapis.com/auth/userinfo.profile) [https://www.googleapis.com/auth/userinfo.email](https://www.googleapis.com/auth/userinfo.email)',
+            scope: 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
             callback: (response) => {
                 if (response.error !== undefined) { 
                     let authDiv = document.getElementById('landingAuth'); if(authDiv) authDiv.style.display = 'flex';
@@ -1056,11 +1056,11 @@ window.triggerGoogleLogin = function() {
 async function fetchUserProfileAndDrive() {
     if(!googleToken) return;
     try {
-        const res = await fetch('[https://www.googleapis.com/oauth2/v3/userinfo](https://www.googleapis.com/oauth2/v3/userinfo)', { headers: { Authorization: `Bearer ${googleToken}` } });
+        const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: `Bearer ${googleToken}` } });
         if(res.status === 401 || res.status === 403) throw new Error("AuthError"); 
         if(res.ok) {
             googleUser = await res.json();
-            let picUrl = googleUser.picture || "[https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png](https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png)";
+            let picUrl = googleUser.picture || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
             let tn = document.getElementById('topName'); if(tn) tn.textContent = googleUser.name;
             let tp = document.getElementById('topProfPic'); if(tp) tp.src = picUrl;
             let ua = document.getElementById('topUserArea'); if(ua) ua.style.display = 'inline-block';
@@ -1097,7 +1097,7 @@ async function syncOrInitDrive() {
     let loadTxt = document.getElementById('loadingText'); if(loadTxt) loadTxt.textContent = "Checking Google Drive...";
     updateSyncStatus("Syncing from Cloud...", "syncing");
     try {
-        const qUrl = '[https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=](https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=)' + encodeURIComponent('name="expense_manager_sync.json"');
+        const qUrl = 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=' + encodeURIComponent('name="expense_manager_sync.json"');
         const qRes = await fetch(qUrl, { headers: { Authorization: `Bearer ${googleToken}` } });
         if(!qRes.ok) throw new Error("Drive query failed");
         const qData = await qRes.json();
@@ -1105,7 +1105,7 @@ async function syncOrInitDrive() {
         if(qData.files && qData.files.length > 0) {
             driveFileId = qData.files[0].id;
             if(loadTxt) loadTxt.textContent = "Downloading your data...";
-            const dlRes = await fetch(`[https://www.googleapis.com/drive/v3/files/$](https://www.googleapis.com/drive/v3/files/$){driveFileId}?alt=media`, { headers: { Authorization: `Bearer ${googleToken}` } });
+            const dlRes = await fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`, { headers: { Authorization: `Bearer ${googleToken}` } });
             const cloudData = await dlRes.json();
             if(cloudData && cloudData.accounts) { state = { ...state, ...cloudData }; render(); }
             updateSyncStatus("Synced securely", "active");
@@ -1121,17 +1121,17 @@ async function forceSyncToDrive() {
     updateSyncStatus("Saving to Cloud...", "syncing");
     try {
         if(!driveFileId) {
-            const qUrl = '[https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=](https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=)' + encodeURIComponent('name="expense_manager_sync.json"');
+            const qUrl = 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=' + encodeURIComponent('name="expense_manager_sync.json"');
             const qRes = await fetch(qUrl, { headers: { Authorization: `Bearer ${googleToken}` } });
             const qData = await qRes.json();
             if(qData.files && qData.files.length > 0) {
                 driveFileId = qData.files[0].id;
             } else {
-                const createRes = await fetch('[https://www.googleapis.com/drive/v3/files](https://www.googleapis.com/drive/v3/files)', { method: 'POST', headers: { 'Authorization': `Bearer ${googleToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'expense_manager_sync.json', parents: ['appDataFolder'] }) });
+                const createRes = await fetch('https://www.googleapis.com/drive/v3/files', { method: 'POST', headers: { 'Authorization': `Bearer ${googleToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'expense_manager_sync.json', parents: ['appDataFolder'] }) });
                 const createData = await createRes.json(); driveFileId = createData.id;
             }
         }
-        const uploadRes = await fetch(`[https://www.googleapis.com/upload/drive/v3/files/$](https://www.googleapis.com/upload/drive/v3/files/$){driveFileId}?uploadType=media`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${googleToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify(state) });
+        const uploadRes = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${googleToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify(state) });
         if(!uploadRes.ok) throw new Error("Upload failed");
         updateSyncStatus("All changes saved to Drive", "active");
     } catch(e) { console.error("Drive Write Error", e); updateSyncStatus("Save Failed - Retrying...", "danger"); }
@@ -1167,10 +1167,10 @@ async function deleteProfile(){
     state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[]};
     if(googleToken) {
         try {
-            const qUrl = '[https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=](https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=)' + encodeURIComponent('name="expense_manager_sync.json"');
+            const qUrl = 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=' + encodeURIComponent('name="expense_manager_sync.json"');
             const qRes = await fetch(qUrl, { headers: { Authorization: `Bearer ${googleToken}` } });
             const qData = await qRes.json();
-            if(qData.files && qData.files.length > 0) { await fetch(`[https://www.googleapis.com/drive/v3/files/$](https://www.googleapis.com/drive/v3/files/$){qData.files[0].id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${googleToken}` } }); }
+            if(qData.files && qData.files.length > 0) { await fetch(`https://www.googleapis.com/drive/v3/files/${qData.files[0].id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${googleToken}` } }); }
         } catch(e) { console.error("Could not delete Drive file", e); }
     }
     handleGoogleSignOut(); setTimeout(() => alert("Your profile and all associated data have been permanently deleted."), 300);

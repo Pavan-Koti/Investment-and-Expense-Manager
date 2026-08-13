@@ -214,7 +214,7 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
 @media(max-width:700px){.financial-summary{grid-template-columns:1fr !important}.financial-summary > .card{height:auto !important}}
 </style>
 </head>
-<body data-product-version="V28.0-QA">
+<body data-product-version="V29.0-QA">
 
 <!-- Premium Landing Page -->
 <div id="landingPage">
@@ -543,7 +543,41 @@ const GOOGLE_CLIENT_ID = "322083319481-4khac8pgtoaf1viapvtccjnfrq6imp70.apps.goo
 
 // --- Custom App Dialogs ---
 window.appAlert = function(msg) { return new Promise(resolve => { let m = document.createElement("div"); m.className = "modal dialog-modal open"; m.innerHTML = `<div class="modalbox"><div class="dialog-text">${esc(msg)}</div><div class="modalactions"><button type="button" class="primary">OK</button></div></div>`; document.body.appendChild(m); m.querySelector("button").onclick = () => { m.remove(); resolve(); }; }); };
-window.appConfirm = function(msg) { return new Promise(resolve => { let m = document.createElement("div"); m.className = "modal dialog-modal open"; m.innerHTML = `<div class="modalbox"><div class="dialog-text">${esc(msg)}</div><div class="modalactions"><button type="button" id="cBtn" class="outline">Cancel</button><button type="button" class="primary" id="oBtn">OK</button></div></div>`; document.body.appendChild(m); m.querySelector("#cBtn").onclick = () => { m.remove(); resolve(false); }; m.querySelector("#oBtn").onclick = () => { m.remove(); resolve(true); }; }); }; window.appPrompt = function(msg, defaultVal="") { return new Promise(resolve => { let m = document.createElement("div"); m.className = "modal dialog-modal open"; m.innerHTML = `<div class="modalbox"><div class="dialog-text">${esc(msg)}</div><input type="text" value="${esc(defaultVal)}"><div class="modalactions"><button type="button" id="cBtn" class="outline">Cancel</button><button type="button" class="primary" id="oBtn">OK</button></div></div>`; document.body.appendChild(m); let inp = m.querySelector("input"); inp.focus(); m.querySelector("#cBtn").onclick = () => { m.remove(); resolve(null); }; m.querySelector("#oBtn").onclick = () => { m.remove(); resolve(inp.value); }; }); };  const EXPENSE_CAT=["Food","Groceries","Transport","Bills","Shopping","Health","Entertainment","Travel","Education","Home","Other"]; const INCOME_CAT=["Salary","FD Interest","MIS Post","Dividends","Equity","Options","Other"]; let state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[]}; const today=()=>new Date().toISOString().slice(0,10),ym=()=>today().slice(0,7); const money=n=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2}).format(n\vert{}\vert{}0); const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); const uid=()=>crypto.randomUUID();  // Pure Cloud-First CRUD wrapper.  async function put(s,o){     let idx = state[s].findIndex(x => x.id === o.id);     if (idx > -1) state[s][idx] = o; else state[s].push(o);     render(); await forceSyncToDrive(); } async function del(s,id){     state[s] = state[s].filter(x => x.id !== id);     render(); await forceSyncToDrive(); } function load(){ render(); }  function acct(id){return state.accounts.find(a=>a.id===id)?.name\vert{}\vert{}"Unknown"} function bal(id){     let a=state.accounts.find(a=>a.id===id);if(!a)return 0;     let ex = state.expenses.filter(x=>x.accountId===id);     let spent = ex.filter(x=>x.type!=='income').reduce((s,x)=>s+x.amount,0);     let earned = ex.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);     let trOut = state.transfers.filter(x=>x.from===id).reduce((s,x)=>s+x.amount,0);     let trIn = state.transfers.filter(x=>x.to===id).reduce((s,x)=>s+x.amount,0);     return (a.opening\vert{}\vert{}0) + earned - spent - trOut + trIn; } function totalBal(){return state.accounts.reduce((s,a)=>s+bal(a.id),0)} function options(arr,blank=""){return (blank?`<option value="">${blank}</option>`:"")+arr.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join("")}
+window.appConfirm = function(msg) { return new Promise(resolve => { let m = document.createElement("div"); m.className = "modal dialog-modal open"; m.innerHTML = `<div class="modalbox"><div class="dialog-text">${esc(msg)}</div><div class="modalactions"><button type="button" id="cBtn" class="outline">Cancel</button><button type="button" class="primary" id="oBtn">OK</button></div></div>`; document.body.appendChild(m); m.querySelector("#cBtn").onclick = () => { m.remove(); resolve(false); }; m.querySelector("#oBtn").onclick = () => { m.remove(); resolve(true); }; }); };
+window.appPrompt = function(msg, defaultVal="") { return new Promise(resolve => { let m = document.createElement("div"); m.className = "modal dialog-modal open"; m.innerHTML = `<div class="modalbox"><div class="dialog-text">${esc(msg)}</div><input type="text" value="${esc(defaultVal)}"><div class="modalactions"><button type="button" id="cBtn" class="outline">Cancel</button><button type="button" class="primary" id="oBtn">OK</button></div></div>`; document.body.appendChild(m); let inp = m.querySelector("input"); inp.focus(); m.querySelector("#cBtn").onclick = () => { m.remove(); resolve(null); }; m.querySelector("#oBtn").onclick = () => { m.remove(); resolve(inp.value); }; }); };
+
+const EXPENSE_CAT=["Food","Groceries","Transport","Bills","Shopping","Health","Entertainment","Travel","Education","Home","Other"];
+const INCOME_CAT=["Salary","FD Interest","MIS Post","Dividends","Equity","Options","Other"];
+let state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[]};
+const today=()=>new Date().toISOString().slice(0,10),ym=()=>today().slice(0,7);
+const money=n=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2}).format(n||0);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const uid=()=>crypto.randomUUID();
+
+// Pure Cloud-First CRUD wrapper. 
+async function put(s,o){
+    let idx = state[s].findIndex(x => x.id === o.id);
+    if (idx > -1) state[s][idx] = o; else state[s].push(o);
+    render(); await forceSyncToDrive();
+}
+async function del(s,id){
+    state[s] = state[s].filter(x => x.id !== id);
+    render(); await forceSyncToDrive();
+}
+function load(){ render(); }
+
+function acct(id){return state.accounts.find(a=>a.id===id)?.name||"Unknown"}
+function bal(id){
+    let a=state.accounts.find(a=>a.id===id);if(!a)return 0;
+    let ex = state.expenses.filter(x=>x.accountId===id);
+    let spent = ex.filter(x=>x.type!=='income').reduce((s,x)=>s+x.amount,0);
+    let earned = ex.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
+    let trOut = state.transfers.filter(x=>x.from===id).reduce((s,x)=>s+x.amount,0);
+    let trIn = state.transfers.filter(x=>x.to===id).reduce((s,x)=>s+x.amount,0);
+    return (a.opening||0) + earned - spent - trOut + trIn;
+}
+function totalBal(){return state.accounts.reduce((s,a)=>s+bal(a.id),0)}
+function options(arr,blank=""){return (blank?`<option value="">${blank}</option>`:"")+arr.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join("")}
 
 function fillCategories(type) {
     const arr = type === 'income' ? INCOME_CAT : EXPENSE_CAT;
@@ -947,7 +981,7 @@ window.addEventListener('click', function(event) {
     }
 });
 
-// --- Google Drive Sync & Auth Logic ---
+// --- Google Drive Sync & Auth Logic (Hardened) ---
 let googleToken = null; let googleUser = null; let tokenClient = null; let driveFileId = null;
 
 function checkAutoLogin() {
@@ -970,20 +1004,43 @@ function initGoogleAuth() {
             client_id: GOOGLE_CLIENT_ID,
             scope: '[https://www.googleapis.com/auth/drive.appdata](https://www.googleapis.com/auth/drive.appdata) [https://www.googleapis.com/auth/userinfo.profile](https://www.googleapis.com/auth/userinfo.profile) [https://www.googleapis.com/auth/userinfo.email](https://www.googleapis.com/auth/userinfo.email)',
             callback: (response) => {
-                if (response.error !== undefined) { throw (response); }
+                if (response.error !== undefined) { 
+                    let authDiv = document.getElementById('landingAuth'); if(authDiv) authDiv.style.display = 'flex';
+                    let loadDiv = document.getElementById('landingLoading'); if(loadDiv) loadDiv.style.display = 'none';
+                    return appAlert("Sign In Error: " + response.error);
+                }
                 googleToken = response.access_token;
                 localStorage.setItem('g_access_token', googleToken); localStorage.setItem('g_token_expiry', Date.now() + (response.expires_in * 1000));
                 let authDiv = document.getElementById('landingAuth'); if(authDiv) authDiv.style.display = 'none';
                 let loadDiv = document.getElementById('landingLoading'); if(loadDiv) loadDiv.style.display = 'flex';
                 fetchUserProfileAndDrive();
+            },
+            error_callback: (err) => {
+                let authDiv = document.getElementById('landingAuth'); if(authDiv) authDiv.style.display = 'flex';
+                let loadDiv = document.getElementById('landingLoading'); if(loadDiv) loadDiv.style.display = 'none';
+                appAlert("Popup was closed or blocked. Error type: " + err.type);
             }
         });
     } catch(e) { console.error("GIS init failed", e); }
 }
 
 window.triggerGoogleLogin = async () => {
-    if(!tokenClient) { initGoogleAuth(); if(!tokenClient) return appAlert("Google Sign-In is initializing. Please wait a moment and click again."); }
-    tokenClient.requestAccessToken();
+    if (window.location.protocol === 'file:') {
+        return appAlert("Google Sign-In blocked. You cannot run this directly from a local file:// URL. Please open this file through a local web server (like VS Code Live Server).");
+    }
+    if (typeof google === 'undefined') {
+        return appAlert("Google Sign-In library is blocked. Please disable your adblocker or strict tracking protection for this page and refresh.");
+    }
+    if(!tokenClient) { 
+        initGoogleAuth(); 
+        if(!tokenClient) return appAlert("Google Sign-In is still initializing. Please wait a moment and click again."); 
+    }
+    
+    try {
+        tokenClient.requestAccessToken({prompt: 'consent'});
+    } catch(e) {
+        appAlert("Failed to open login popup. " + e.message);
+    }
 };
 
 async function fetchUserProfileAndDrive() {

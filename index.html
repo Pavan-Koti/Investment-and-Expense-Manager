@@ -5,6 +5,8 @@
 <title>Personal OS — Your life, connected</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
+#morningBriefing{display:none;position:fixed;inset:0;z-index:1200;}
+
 :root{
  --bg-main:#f9fafb; --bg-sidebar:#ffffff; --page-bg: #fcfcf9;
  --bg:#f5f5f7;--surface:rgba(255,255,255,.82);--surface2:rgba(255,255,255,.62);
@@ -143,7 +145,10 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 .progress{margin-top:8px}.progresshead{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px}.bar{height:5px;background:var(--hair);border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);border-radius:8px}
 
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;padding:16px;z-index:9000;backdrop-filter:blur(7px)}
-.modal.open{display:flex}.modalbox{background:var(--surface);border:1px solid var(--border);border-radius:17px;padding:18px;max-width:540px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 25px 80px rgba(0,0,0,.18);}
+.modal.open{display:flex}
+.modal-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.35);align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-overlay > .modal{display:flex;position:relative;inset:auto;z-index:auto}.modalbox{background:var(--surface);border:1px solid var(--border);border-radius:17px;padding:18px;max-width:540px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 25px 80px rgba(0,0,0,.18);}
 .modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h2{margin:0;font-size:18px;font-weight:550}.modalactions{display:flex;justify-content:flex-end;gap:7px;margin-top:14px}
 .dialog-modal .modalbox{max-width:380px; text-align:center;} .dialog-modal .dialog-text{font-size:14px; margin-bottom:15px; color:var(--text);} .dialog-modal .modalactions{justify-content: center;}
 
@@ -481,7 +486,7 @@ body.dark #timePastBadge{color:#1c1c1e}
 
 <!-- ANALYTICS & SETTINGS -->
 <section id="analytics"><div class="summary-grid"><div class="card kpi"><div class="label">Lifetime Income</div><div id="anaIncome" class="value income">₹0</div></div><div class="card kpi"><div class="label">Lifetime Expense</div><div id="anaExpense" class="value expense">₹0</div></div><div class="card kpi"><div class="label">Total Investments</div><div id="anaInvestments" class="value" style="color:var(--accent)">₹0</div></div><div class="card kpi"><div class="label">Total Active Debt</div><div id="anaDebt" class="value warning">₹0</div></div></div><div class="two"><div class="card"><h2>Account Growth (Income vs Expense)</h2><div id="growthChart" style="margin-top:20px;"></div></div><div class="card"><h2>Portfolio Balance (Net Worth Estimate)</h2><div id="netWorthChart" style="margin-top:20px;"></div></div></div></section>
-<section id="settings"><div class="layout"><div class="card"><h2>Data Sync</h2><div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; margin-top:10px;"><span class="status-dot" id="tabSyncDot" style="width:14px; height:14px;"></span><b id="syncStatusText">Checking Connection...</b></div><p class="small" style="line-height:1.5;">Your data is automatically synced to your private Google Drive using an isolated application folder. Your data is 100% secure and the developer or any third party applications won't have access to it.</p><div style="margin-top:18px; display:flex; gap:10px;"><button type="button" class="primary" onclick="forceSyncToDrive()" id="btnForceSync">Force Cloud Backup</button><button type="button" class="outline" onclick="syncOrInitDrive()">Pull Cloud Data</button></div></div><div class="card"><h2>Preferences & System</h2><div class="form" style="margin-top:10px;"><div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Appearance</span><button type="button" class="outline" onclick="toggleDark()">Toggle Dark Mode</button></div><div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Auto Log-Off (Inactivity)</span><select id="autoLogoffSelect" onchange="localStorage.setItem('expense-autologoff', this.value); idleTimer=0;" style="width:auto; padding:6px 10px;"><option value="1">1 Minute</option><option value="5">5 Minutes</option><option value="15">15 Minutes</option><option value="30">30 Minutes</option><option value="0">Never</option></select></div><div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Local Backup</span><div><button type="button" class="outline" onclick="backup()">Export JSON</button><label class="filebtn outline" style="margin-left:6px;">Import Data<input id="importFile" type="file" accept=".json" hidden></label></div></div><div style="margin-top:20px;"><p class="small" style="color:var(--red); margin-bottom:10px; font-weight:500;">Danger Zone</p><div style="display: flex; gap: 10px; flex-direction: column;"><button type="button" class="danger outline" onclick="eraseAllData()" style="width:100%;">Erase All Data (Keep Account)</button><button type="button" class="danger" onclick="deleteProfile()" style="width:100%;">Delete Profile & Disconnect</button></div></div></div></div></div></section>
+<section id="settings"><div class="layout"><div class="card"><h2>Data Sync</h2><div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; margin-top:10px;"><span class="status-dot" id="tabSyncDot" style="width:14px; height:14px;"></span><b id="syncStatusText">Checking Connection...</b></div><p class="small" style="line-height:1.5;">Your data is synced to your Google Drive app-data area when Google sync is connected. Keep a local JSON backup for recovery.</p><div style="margin-top:18px; display:flex; gap:10px;"><button type="button" class="primary" onclick="forceSyncToDrive()" id="btnForceSync">Force Cloud Backup</button><button type="button" class="outline" onclick="syncOrInitDrive()">Pull Cloud Data</button></div></div><div class="card"><h2>Preferences & System</h2><div class="form" style="margin-top:10px;"><div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Appearance</span><button type="button" class="outline" onclick="toggleDark()">Toggle Dark Mode</button></div><div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Auto Log-Off (Inactivity)</span><select id="autoLogoffSelect" onchange="localStorage.setItem('expense-autologoff', this.value); idleTimer=0;" style="width:auto; padding:6px 10px;"><option value="1">1 Minute</option><option value="5">5 Minutes</option><option value="15">15 Minutes</option><option value="30">30 Minutes</option><option value="0">Never</option></select></div><div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Local Backup</span><div><button type="button" class="outline" onclick="backup()">Export JSON</button><label class="filebtn outline" style="margin-left:6px;">Import Data<input id="importFile" type="file" accept=".json" hidden></label></div></div><div style="margin-top:20px;"><p class="small" style="color:var(--red); margin-bottom:10px; font-weight:500;">Danger Zone</p><div style="display: flex; gap: 10px; flex-direction: column;"><button type="button" class="danger outline" onclick="eraseAllData()" style="width:100%;">Erase All Data (Keep Account)</button><button type="button" class="danger" onclick="deleteProfile()" style="width:100%;">Delete Profile & Disconnect</button></div></div></div></div></div></section>
 
 <!-- Overlays: Time Machine & Butterfly Effect -->
 <div id="butterflyOverlay" onclick="dismissButterfly()">
@@ -552,14 +557,49 @@ window.appPrompt = function(msg, defaultVal="") { return new Promise(resolve => 
 const EXPENSE_CAT=["Food","Groceries","Transport","Bills","Shopping","Health","Entertainment","Travel","Education","Home","Other"];
 const INCOME_CAT=["Salary","FD Interest","MIS Post","Dividends","Equity","Options","Other"];
 let state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[],vault:[]};
+const CAL_MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const today=()=>new Date().toISOString().slice(0,10),ym=()=>today().slice(0,7);
 const money=n=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2}).format(n||0);
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-const uid=()=>crypto.randomUUID();
+const uid=()=>{ if(globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID(); if(globalThis.crypto?.getRandomValues){const a=new Uint8Array(16);globalThis.crypto.getRandomValues(a);a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;return [...a].map((b,i)=>((i===4||i===6||i===8||i===10)?"-":"")+b.toString(16).padStart(2,"0")).join("");} return `${Date.now()}-${Math.random().toString(16).slice(2)}`; };
 
-async function put(s,o){ let idx = state[s].findIndex(x => x.id === o.id); if (idx > -1) state[s][idx] = o; else state[s].push(o); render(); await forceSyncToDrive(); }
-async function del(s,id){ state[s] = state[s].filter(x => x.id !== id); render(); await forceSyncToDrive(); }
-function load(){ render(); }
+const STATE_KEY = "expense-manager-state-v31";
+const STATE_VERSION = 31;
+let syncTimer = null;
+let syncInFlight = false;
+let syncQueued = false;
+function emptyState(){ return {accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[],vault:[]}; }
+function normalizeState(raw){
+    const base = emptyState();
+    const src = raw && typeof raw === "object" ? raw : {};
+    Object.keys(base).forEach(k => base[k] = Array.isArray(src[k]) ? src[k] : []);
+    return base;
+}
+function saveLocalState(){
+    try { localStorage.setItem(STATE_KEY, JSON.stringify({version:STATE_VERSION, state})); }
+    catch(e){ console.error("Local persistence failed", e); updateSyncStatus("Local save failed", "danger"); }
+}
+function loadLocalState(){
+    try { const raw = JSON.parse(localStorage.getItem(STATE_KEY) || "null"); if(raw && raw.state) state = normalizeState(raw.state); }
+    catch(e){ console.error("Local state load failed", e); state = emptyState(); }
+}
+function queueCloudSync(){
+    saveLocalState();
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => forceSyncToDrive(), 500);
+}
+async function put(s,o){
+    if(!state[s]) state[s]=[];
+    const idx = state[s].findIndex(x => x.id === o.id);
+    if(idx > -1) state[s][idx] = o; else state[s].push(o);
+    saveLocalState(); render(); queueCloudSync();
+}
+async function del(s,id){
+    if(!state[s]) return;
+    state[s] = state[s].filter(x => x.id !== id);
+    saveLocalState(); render(); queueCloudSync();
+}
+function load(){ loadLocalState(); render(); }
 
 // Advanced Feature Helpers
 function isoOf(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -833,7 +873,7 @@ function editDebt(id){let x=state.debts.find(a=>a.id===id);openModal("Edit Debt"
 function openModal(t,b){document.getElementById('modalTitle').textContent=t;document.getElementById('modalBody').innerHTML=b;document.getElementById('modal').classList.add("open")}
 function closeModal(){document.getElementById('modal').classList.remove("open")}
 
-const CAL_MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+
 function formatDateApple(v){if(!v)return "Select date";let d=new Date(v+"T00:00:00");return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});}
 function formatMonthApple(v){if(!v)return "Select month";let [y, m] = v.split("-"); return CAL_MONTHS[parseInt(m)-1].slice(0,3) + " " + y;}
 function makeDatePicker(input){
@@ -1052,7 +1092,7 @@ function initGoogleAuth() {
     try {
         tokenClient = google.accounts.oauth2.initTokenClient({
             client_id: GOOGLE_CLIENT_ID,
-            scope: '[https://www.googleapis.com/auth/drive.appdata](https://www.googleapis.com/auth/drive.appdata) [https://www.googleapis.com/auth/userinfo.profile](https://www.googleapis.com/auth/userinfo.profile) [https://www.googleapis.com/auth/userinfo.email](https://www.googleapis.com/auth/userinfo.email)',
+            scope: 'openid email profile https://www.googleapis.com/auth/drive.appdata',
             callback: (response) => {
                 if (response.error !== undefined) { 
                     let authDiv = document.getElementById('landingAuth'); if(authDiv) authDiv.style.display = 'flex';
@@ -1084,11 +1124,11 @@ window.triggerGoogleLogin = function() {
 async function fetchUserProfileAndDrive() {
     if(!googleToken) return;
     try {
-        const res = await fetch('[https://www.googleapis.com/oauth2/v3/userinfo](https://www.googleapis.com/oauth2/v3/userinfo)', { headers: { Authorization: `Bearer ${googleToken}` } });
+        const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: `Bearer ${googleToken}` } });
         if(res.status === 401 || res.status === 403) throw new Error("AuthError"); 
         if(res.ok) {
             googleUser = await res.json();
-            let picUrl = googleUser.picture || "[https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png](https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png)";
+            let picUrl = googleUser.picture || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
             let tn = document.getElementById('topName'); if(tn) tn.textContent = googleUser.name;
             let tp = document.getElementById('topProfPic'); if(tp) tp.src = picUrl;
             let ua = document.getElementById('topUserArea'); if(ua) ua.style.display = 'inline-block';
@@ -1105,7 +1145,7 @@ function handleGoogleSignOut() {
     if(googleToken) { try{ google.accounts.oauth2.revoke(googleToken); }catch(e){} }
     googleToken = null; googleUser = null; driveFileId = null;
     localStorage.removeItem('g_access_token'); localStorage.removeItem('g_token_expiry');
-    state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[],vault:[]};
+    saveLocalState();
     let ac = document.getElementById('appContent'); if(ac) ac.style.display = 'none';
     let lp = document.getElementById('landingPage'); if(lp) lp.style.display = 'flex';
     let la = document.getElementById('landingAuth'); if(la) la.style.display = 'flex';
@@ -1125,7 +1165,7 @@ async function syncOrInitDrive() {
     let loadTxt = document.getElementById('loadingText'); if(loadTxt) loadTxt.textContent = "Checking Google Drive...";
     updateSyncStatus("Syncing from Cloud...", "syncing");
     try {
-        const qUrl = '[https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=](https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=)' + encodeURIComponent('name="expense_manager_sync.json"');
+        const qUrl = 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=' + encodeURIComponent('name="expense_manager_sync.json"');
         const qRes = await fetch(qUrl, { headers: { Authorization: `Bearer ${googleToken}` } });
         if(!qRes.ok) throw new Error("Drive query failed");
         const qData = await qRes.json();
@@ -1133,10 +1173,10 @@ async function syncOrInitDrive() {
         if(qData.files && qData.files.length > 0) {
             driveFileId = qData.files[0].id;
             if(loadTxt) loadTxt.textContent = "Downloading your data...";
-            const dlRes = await fetch(`[https://www.googleapis.com/drive/v3/files/$](https://www.googleapis.com/drive/v3/files/$){driveFileId}?alt=media`, { headers: { Authorization: `Bearer ${googleToken}` } });
+            const dlRes = await fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`, { headers: { Authorization: `Bearer ${googleToken}` } });
             const cloudData = await dlRes.json();
             if(cloudData && cloudData.accounts) { 
-                state = { ...state, ...cloudData }; 
+                state = normalizeState(cloudData.state || cloudData); saveLocalState(); 
                 if(!state.journal) state.journal = [];
                 if(!state.tasks) state.tasks = [];
                 if(!state.habits) state.habits = [];
@@ -1153,24 +1193,30 @@ async function syncOrInitDrive() {
 }
 
 async function forceSyncToDrive() {
-    if(!googleToken) return;
+    if(!googleToken) { saveLocalState(); return; }
+    if(syncInFlight){ syncQueued=true; return; }
+    syncInFlight=true; syncQueued=false;
     updateSyncStatus("Saving to Cloud...", "syncing");
     try {
         if(!driveFileId) {
-            const qUrl = '[https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=](https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=)' + encodeURIComponent('name="expense_manager_sync.json"');
-            const qRes = await fetch(qUrl, { headers: { Authorization: `Bearer ${googleToken}` } });
+            const qUrl = 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=' + encodeURIComponent('name="expense_manager_sync.json"');
+            const qRes = await fetch(qUrl, {headers:{Authorization:`Bearer ${googleToken}`}});
+            if(!qRes.ok) throw new Error(`Drive query failed (${qRes.status})`);
             const qData = await qRes.json();
-            if(qData.files && qData.files.length > 0) {
-                driveFileId = qData.files[0].id;
-            } else {
-                const createRes = await fetch('[https://www.googleapis.com/drive/v3/files](https://www.googleapis.com/drive/v3/files)', { method: 'POST', headers: { 'Authorization': `Bearer ${googleToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'expense_manager_sync.json', parents: ['appDataFolder'] }) });
-                const createData = await createRes.json(); driveFileId = createData.id;
+            if(qData.files && qData.files.length) driveFileId=qData.files[0].id;
+            else {
+                const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {method:'POST',headers:{Authorization:`Bearer ${googleToken}`,'Content-Type':'application/json'},body:JSON.stringify({name:'expense_manager_sync.json',parents:['appDataFolder'],mimeType:'application/json'})});
+                if(!createRes.ok) throw new Error(`Drive create failed (${createRes.status})`);
+                const createData=await createRes.json();
+                if(!createData.id) throw new Error('Drive file id missing');
+                driveFileId=createData.id;
             }
         }
-        const uploadRes = await fetch(`[https://www.googleapis.com/upload/drive/v3/files/$](https://www.googleapis.com/upload/drive/v3/files/$){driveFileId}?uploadType=media`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${googleToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify(state) });
-        if(!uploadRes.ok) throw new Error("Upload failed");
+        const uploadRes = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(driveFileId)}?uploadType=media`, {method:'PATCH',headers:{Authorization:`Bearer ${googleToken}`,'Content-Type':'application/json'},body:JSON.stringify({version:STATE_VERSION,state})});
+        if(!uploadRes.ok) throw new Error(`Upload failed (${uploadRes.status})`);
         updateSyncStatus("All changes saved to Drive", "active");
-    } catch(e) { console.error("Drive Write Error", e); updateSyncStatus("Save Failed - Retrying...", "danger"); }
+    } catch(e) { console.error("Drive Write Error",e); updateSyncStatus("Cloud save failed · Local copy retained", "danger"); }
+    finally { syncInFlight=false; if(syncQueued) { syncQueued=false; forceSyncToDrive(); } }
 }
 function triggerAutoSync() { if(googleToken) forceSyncToDrive(); }
 
@@ -1254,7 +1300,8 @@ async function eraseAllData(){
     if(await appConfirm("Erase all your data? This will empty your records but keep you logged in.")){
         const phrase = await appPrompt('Type ERASE to confirm.');
         if(phrase !== "ERASE") { await appAlert("Data was not erased."); return; }
-        state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[],vault:[]};
+        state=emptyState();
+        saveLocalState();
         await forceSyncToDrive();
         render();
         appAlert("All data erased.");
@@ -1265,13 +1312,14 @@ async function deleteProfile(){
     if(await appConfirm("Delete your profile and erase all data?\n\nThis will completely remove your local data and attempt to delete the cloud backup. This cannot be undone.")){
         const phrase = await appPrompt('Type DELETE to confirm.'); 
         if(phrase !== "DELETE"){ await appAlert("Nothing was erased."); return; }
-        state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[],vault:[]};
+        state=emptyState();
+        saveLocalState();
         if(googleToken) {
             try {
-                const qUrl = '[https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=](https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=)' + encodeURIComponent('name="expense_manager_sync.json"');
+                const qUrl = 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=' + encodeURIComponent('name="expense_manager_sync.json"');
                 const qRes = await fetch(qUrl, { headers: { Authorization: `Bearer ${googleToken}` } });
                 const qData = await qRes.json();
-                if(qData.files && qData.files.length > 0) { await fetch(`[https://www.googleapis.com/drive/v3/files/$](https://www.googleapis.com/drive/v3/files/$){qData.files[0].id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${googleToken}` } }); }
+                if(qData.files && qData.files.length > 0) { await fetch(`https://www.googleapis.com/drive/v3/files/${qData.files[0].id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${googleToken}` } }); }
             } catch(e) { console.error("Could not delete Drive file", e); }
         }
         handleGoogleSignOut(); setTimeout(() => alert("Your profile and all associated data have been permanently deleted."), 300);
@@ -1354,8 +1402,8 @@ function renderJournalPage(dateStr) {
             entry.media.forEach((mediaItem, index) => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'draggable-media';
-                wrapper.style.top = mediaItem.y ? mediaItem.y + 'px' : (20 + (index * 40)) + 'px';
-                wrapper.style.left = mediaItem.x ? mediaItem.x + 'px' : (350 + (index * 30)) + 'px';
+                wrapper.style.top = mediaItem.y != null ? mediaItem.y + 'px' : (20 + (index * 40)) + 'px';
+                wrapper.style.left = mediaItem.x != null ? mediaItem.x + 'px' : (350 + (index * 30)) + 'px';
                 wrapper.dataset.mediaIndex = index;
                 wrapper.innerHTML = `<div class="pin"></div>`;
                 
@@ -1397,9 +1445,16 @@ function getBase64(file) {
     });
 }
 
+function openJournalEntryModal(dateStr=today(), entry=null){
+    const modal=document.getElementById("entryModal"); if(!modal) return;
+    document.getElementById("entryDate").value=dateStr;
+    document.getElementById("entryText").value=entry?.text||"";
+    document.getElementById("entryMedia").value="";
+    modal.classList.add("open");
+}
 async function saveScrapbookEntry() {
     const dateStr = document.getElementById('entryDate').value;
-    if (!dateStr) return alert("Please select a date.");
+    if (!dateStr) { await appAlert("Please select a date."); return; }
 
     let existingEntry = state.journal.find(x => x.date === dateStr);
     let existingMedia = existingEntry && existingEntry.media ? existingEntry.media : [];
@@ -1408,6 +1463,7 @@ async function saveScrapbookEntry() {
     const newMedia = [];
 
     for (let file of files) {
+        if(file.size > 8 * 1024 * 1024){ await appAlert(`\"${file.name}\" is larger than 8 MB and was skipped.`); continue; }
         try {
             const base64String = await getBase64(file);
             newMedia.push({ url: base64String, type: file.type, x: null, y: null });
@@ -1468,6 +1524,7 @@ document.addEventListener('mouseup', async () => {
         if(document.getElementById('filterMonth')) document.getElementById('filterMonth').value=ym();
         if(document.getElementById('autoLogoffSelect')) document.getElementById('autoLogoffSelect').value = localStorage.getItem('expense-autologoff') ?? '5';
         enhanceDates(document);
+        load();
         checkAutoLogin(); setTimeout(initGoogleAuth, 100);
     } catch(err) {
         console.error("Initialization Error:", err); let lt = document.getElementById('loadingText'); if(lt) lt.textContent = "Error loading database.";

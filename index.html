@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Personal OS — Your life, connected</title>
+<title>ONEVA — Your life, connected</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 #morningBriefing{display:none;position:fixed;inset:0;z-index:1200;}
@@ -151,6 +151,33 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 .modal-overlay > .modal{display:flex;position:relative;inset:auto;z-index:auto}.modalbox{background:var(--surface);border:1px solid var(--border);border-radius:17px;padding:18px;max-width:540px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 25px 80px rgba(0,0,0,.18);}
 .modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h2{margin:0;font-size:18px;font-weight:550}.modalactions{display:flex;justify-content:flex-end;gap:7px;margin-top:14px}
 .dialog-modal .modalbox{max-width:380px; text-align:center;} .dialog-modal .dialog-text{font-size:14px; margin-bottom:15px; color:var(--text);} .dialog-modal .modalactions{justify-content: center;}
+/* ONEVA unified modal system — all tab dialogs share the Journal visual language */
+.modal{background:rgba(0,0,0,.38);}
+.modal > .modalbox,.modal-overlay > .modal{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:0 28px 90px rgba(0,0,0,.20);backdrop-filter:blur(24px);overflow:hidden;}
+.modal > .modalbox{padding:0;max-width:560px;max-height:88vh;}
+.modal-overlay > .modal{width:min(560px,100%);max-height:88vh;padding:0;display:flex;flex-direction:column;}
+.modalhead,.modal-header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 20px;border-bottom:1px solid var(--border);background:var(--surface);}
+.modalhead h2,.modal-header h3{margin:0;font-size:17px;line-height:1.2;font-weight:650;letter-spacing:-.02em;color:var(--text-primary);}
+.modal-eyebrow{font-size:9px;letter-spacing:.12em;font-weight:700;color:var(--accent);margin-bottom:4px;}
+.modal-close{width:32px;height:32px;padding:0;border:1px solid transparent;background:transparent;color:var(--muted);border-radius:9px;display:grid;place-items:center;font-size:14px;}
+.modal-close:hover{background:var(--hover-bg);color:var(--text);box-shadow:none;}
+.modal > .modalbox > #modalBody,.modal-body{padding:20px;overflow-y:auto;min-height:0;}
+.modal > .modalbox > #modalBody{max-height:calc(88vh - 74px);}
+.modal-body{display:flex;flex-direction:column;gap:16px;max-height:60vh;}
+.modal-body .form-group,.modal-body .field{display:flex;flex-direction:column;gap:6px;}
+.modal-body label{font-size:12px;font-weight:600;color:var(--text-secondary);}
+.modal-body input,.modal-body select,.modal-body textarea,.modal > .modalbox input,.modal > .modalbox select,.modal > .modalbox textarea{width:100%;border:1px solid var(--border);border-radius:9px;background:var(--surface2);color:var(--text);padding:10px 11px;outline:none;transition:border-color .15s,box-shadow .15s,background .15s;}
+.modal-body input:focus,.modal-body select:focus,.modal-body textarea:focus,.modal > .modalbox input:focus,.modal > .modalbox select:focus,.modal > .modalbox textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accentSoft);background:var(--surface);}
+.modal-body textarea{min-height:180px;resize:vertical;line-height:1.55;font-family:inherit;font-size:14px;}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--border);background:var(--surface2);}
+.modalactions{padding:0 20px 18px;margin-top:0;}
+.label-muted{font-weight:400;color:var(--muted);}
+.field-help{font-size:10px;color:var(--muted);line-height:1.4;}
+.file-input{padding:9px !important;background:var(--surface2) !important;}
+.dialog-modal .modalbox{max-width:400px;text-align:center;}
+.dialog-modal .dialog-text{font-size:14px;margin-bottom:15px;color:var(--text);}
+.dialog-modal .modalactions{justify-content:center;padding:0 18px 18px;}
+@media(max-width:600px){.modal{padding:12px}.modal > .modalbox,.modal-overlay > .modal{width:100%;max-height:92vh;border-radius:16px}.modalhead,.modal-header{padding:16px}.modal > .modalbox > #modalBody,.modal-body{padding:16px}.modal-footer{padding:12px 16px}.modal-body textarea{min-height:150px;}}
 
 .calendar{position:fixed;z-index:9999;width:292px;padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--surface);box-shadow:0 18px 55px rgba(0,0,0,.16);backdrop-filter:blur(25px);display:none;}
 .calendar.open{display:block; opacity:1;}
@@ -199,6 +226,9 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 .hub-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;animation:fadeIn .25s ease;}
 .hub-card.wide{grid-column:1 / -1;}
 .hub-card-h{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:650;font-size:14px;min-height:32px;}
+.hub-card-nav{width:30px;height:30px;min-width:30px;padding:0;border:1px solid var(--border);background:var(--surface2);color:var(--text-secondary);border-radius:9px;display:grid;place-items:center;font-size:20px;line-height:1;cursor:pointer;transition:all .15s ease;}
+.hub-card-nav:hover{color:var(--accent);border-color:var(--accent);background:var(--accentSoft);box-shadow:none;transform:translateX(1px);}
+
 .hub-card-title{display:flex;align-items:center;gap:9px;min-width:0;}
 .hub-card-title > span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .hub-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;background:var(--accentSoft);color:var(--accent);font-size:16px;}
@@ -314,12 +344,12 @@ body.dark #timePastBadge{color:#1c1c1e}
 @media(max-width:700px){.summary-grid,.financial-summary{grid-template-columns:1fr !important}}
 </style>
 </head>
-<body data-product-version="V30.3-PROD-RESTORED-MAX-HUD">
+<body data-product-version="ONEVA-V1">
 
 <div id="landingPage">
     <div class="landing-card">
         <div class="brand-icon">◈</div>
-        <h1>Personal OS</h1>
+        <h1>ONEVA</h1>
         <p>Your secure, intelligent personal finance & life planner. Sign in to seamlessly sync your portfolio across all your devices.</p>
         <div id="landingAuth">
             <button type="button" class="google-btn-large" onclick="triggerGoogleLogin()">
@@ -353,7 +383,7 @@ body.dark #timePastBadge{color:#1c1c1e}
 
 <div class="app-container" id="appContent" style="display:none;">
 <aside class="sidebar">
-  <div class="sidebar-header"><div class="brand-icon-small">◈</div><span>Personal OS</span></div>
+  <div class="sidebar-header"><div class="brand-icon-small">◈</div><span>ONEVA</span></div>
   <div class="sidebar-scroll-area" id="sideNav">
     <button type="button" class="nav-item active" data-tab="hub"><span class="icon">◈</span> Command Center</button>
     
@@ -583,26 +613,17 @@ body.dark #timePastBadge{color:#1c1c1e}
 
 <!-- Scrapbook Entry Modal -->
 <div class="modal-overlay" id="entryModal">
-  <div class="modal" style="background:var(--surface); border:1px solid var(--border);">
-    <div class="modal-header" style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-      <h3 style="margin:0; font-size:16px;">Journal Entry</h3><button type="button" class="outline" onclick="document.getElementById('entryModal').classList.remove('open')" style="border:none; padding:4px 8px;">✕</button>
+  <div class="modal journal-modal" role="dialog" aria-modal="true" aria-labelledby="journalModalTitle">
+    <div class="modal-header">
+      <div><div class="modal-eyebrow">JOURNAL</div><h3 id="journalModalTitle">New Entry</h3></div>
+      <button type="button" class="modal-close" aria-label="Close" onclick="document.getElementById('entryModal').classList.remove('open')">✕</button>
     </div>
-    <div class="modal-body" style="padding:20px; display:flex; flex-direction:column; gap:16px; max-height:60vh; overflow-y:auto;">
-      <div class="form-group" style="display:flex; flex-direction:column; gap:6px;">
-        <label style="font-size:13px; font-weight:600; color:var(--text-secondary);">Date</label>
-        <input type="date" id="entryDate" style="padding:8px; border:1px solid var(--border); border-radius:6px;">
-      </div>
-      <div class="form-group" style="display:flex; flex-direction:column; gap:6px;">
-        <label style="font-size:13px; font-weight:600; color:var(--text-secondary);">Your Thoughts</label>
-        <textarea id="entryText" placeholder="What's on your mind?" style="height:200px; padding:12px; border:1px solid var(--border); border-radius:8px; font-family:'Georgia',serif; font-size:16px; line-height:1.6; resize:vertical; outline:none;"></textarea>
-      </div>
-      <div class="form-group" style="display:flex; flex-direction:column; gap:6px;">
-        <label style="font-size:13px; font-weight:600; color:var(--text-secondary);">Attach Memories (Images/Video)</label>
-        <input type="file" id="entryMedia" accept="image/*, video/*" multiple style="font-size:13px; border:none; padding:0; background:transparent;">
-        <span style="font-size:11px; color:var(--text-secondary);">Items will be scattered on the page. Drag them to rearrange.</span>
-      </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Date</label><input type="date" id="entryDate"></div>
+      <div class="form-group"><label>Your Thoughts</label><textarea id="entryText" placeholder="What's on your mind?"></textarea></div>
+      <div class="form-group"><label>Attach Memories <span class="label-muted">Images or video</span></label><input type="file" id="entryMedia" accept="image/*, video/*" multiple class="file-input"><span class="field-help">Items will be placed on your journal canvas. Drag them to rearrange.</span></div>
     </div>
-    <div class="modal-footer" style="padding:16px 20px; border-top:1px solid var(--border); background:var(--surface2); display:flex; justify-content:flex-end; gap:10px;">
+    <div class="modal-footer">
       <button type="button" class="outline" onclick="document.getElementById('entryModal').classList.remove('open')">Cancel</button>
       <button type="button" class="primary" onclick="saveScrapbookEntry()">Save in Journal</button>
     </div>
@@ -918,19 +939,19 @@ function renderHub(){
     var action=(icon,label,fn,cls='')=>`<button type="button" class="hub-action" onclick="${fn}"><span class="hub-icon ${cls}">${icon}</span><span>${label}</span></button>`;
 
     var W={};
-    W.glance=`<div class="hub-card" data-w="glance"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon">☼</span><span><span>Today at a glance</span><span class="hub-card-sub">${formatDateApple(todayStr)}</span></span></div></div><div class="hub-glance-metrics"><div class="hub-metric"><div class="hm-label">Expenses</div><div class="hm-val expense">${money(todayExpenses.reduce((s,x)=>s+x.amount,0))}</div><div class="hm-meta">${todayExpenses.length} transaction${todayExpenses.length===1?'':'s'}</div></div><div class="hub-metric"><div class="hm-label">Income</div><div class="hm-val income">${money(todayIncome.reduce((s,x)=>s+x.amount,0))}</div><div class="hm-meta">${todayIncome.length} transaction${todayIncome.length===1?'':'s'}</div></div><div class="hub-metric"><div class="hm-label">Balance</div><div class="hm-val">${money(balance)}</div><div class="hm-meta">Current</div></div></div><button type="button" class="hub-link hub-footer-link" onclick="showTab('dashboard')"><span>⌁ View Analytics</span><span>›</span></button></div>`;
+    W.glance=`<div class="hub-card" data-w="glance"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon">☼</span><span><span>Today at a glance</span><span class="hub-card-sub">${formatDateApple(todayStr)}</span></span></div><button type="button" class="hub-card-nav" aria-label="Open Overview" title="Open Overview" onclick="showTab('dashboard')">›</button></div><div class="hub-glance-metrics"><div class="hub-metric"><div class="hm-label">Expenses</div><div class="hm-val expense">${money(todayExpenses.reduce((s,x)=>s+x.amount,0))}</div><div class="hm-meta">${todayExpenses.length} transaction${todayExpenses.length===1?'':'s'}</div></div><div class="hub-metric"><div class="hm-label">Income</div><div class="hm-val income">${money(todayIncome.reduce((s,x)=>s+x.amount,0))}</div><div class="hm-meta">${todayIncome.length} transaction${todayIncome.length===1?'':'s'}</div></div><div class="hub-metric"><div class="hm-label">Balance</div><div class="hm-val">${money(balance)}</div><div class="hm-meta">Current</div></div></div></div>`;
 
-    W.upcoming=`<div class="hub-card" data-w="upcoming"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon purple">▣</span><span><span>Upcoming</span><span class="hub-card-sub">Next 30 days</span></span></div><button class="linklike" onclick="showTab('planned')">View All ›</button></div><div class="hub-card-scroll hub-list">${upcomingRows||'<div class="hub-empty">Nothing due in the next 30 days.</div>'}</div><button type="button" class="hub-link hub-footer-link" onclick="showTab('planned')"><span>▣ View All</span><span>›</span></button></div>`;
+    W.upcoming=`<div class="hub-card" data-w="upcoming"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon purple">▣</span><span><span>Upcoming</span><span class="hub-card-sub">Next 30 days</span></span></div><button type="button" class="hub-card-nav" aria-label="Open Upcoming" title="Open Upcoming" onclick="showTab('planned')">›</button></div><div class="hub-card-scroll hub-list">${upcomingRows||'<div class="hub-empty">Nothing due in the next 30 days.</div>'}</div></div>`;
 
-    W.tasks=`<div class="hub-card" data-w="tasks"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon green">✓</span><span><span>Tasks</span><span class="hub-card-sub">${completedTasks} of ${allTasks.length} completed</span></span></div><div class="hub-progress"><div class="hub-progress-ring" style="--pct:${taskPct}%"><span>${taskPct}%</span></div></div></div><div class="hub-card-scroll hub-list">${taskRows||'<div class="hub-empty">Nothing open. You’re clear.</div>'}</div><button type="button" class="hub-link hub-footer-link" onclick="showTab('tasks')"><span>✓ View All Tasks</span><span>›</span></button></div>`;
+    W.tasks=`<div class="hub-card" data-w="tasks"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon green">✓</span><span><span>Tasks</span><span class="hub-card-sub">${completedTasks} of ${allTasks.length} completed</span></span></div><div class="hub-progress"><div class="hub-progress-ring" style="--pct:${taskPct}%"><span>${taskPct}%</span></div><button type="button" class="hub-card-nav" aria-label="Open Tasks" title="Open Tasks" onclick="showTab('tasks')">›</button></div></div><div class="hub-card-scroll hub-list">${taskRows||'<div class="hub-empty">Nothing open. You’re clear.</div>'}</div></div>`;
 
-    W.reflection=`<div class="hub-card" data-w="reflection"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon pink">♡</span><span><span>Reflection</span><span class="hub-card-sub">How was your day?</span></span></div><button class="linklike" onclick="showTab('journal')">Open ›</button></div><div class="hub-quote"><span class="hub-quote-mark">“</span><span>${esc(reflection)}</span></div><button type="button" class="hub-link hub-footer-link" onclick="openJournalEntryModal(today())"><span>✎ Add Reflection</span><span>›</span></button></div>`;
+    W.reflection=`<div class="hub-card" data-w="reflection"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon pink">♡</span><span><span>Reflection</span><span class="hub-card-sub">How was your day?</span></span></div><button type="button" class="hub-card-nav" aria-label="Open Journal" title="Open Journal" onclick="showTab('journal')">›</button></div><div class="hub-quote"><span class="hub-quote-mark">“</span><span>${esc(reflection)}</span></div><button type="button" class="hub-link hub-footer-link" onclick="openJournalEntryModal(today())"><span>✎ Add Reflection</span><span>›</span></button></div>`;
 
-    W.ai=`<div class="hub-card" data-w="ai"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon">✦</span><span><span>Co-pilot</span><span class="hub-card-sub">AI-powered insights for you</span></span></div><button class="linklike" onclick="toggleAiPanel()">Chat ›</button></div><div class="hub-insight"><div>✦ You’ve spent ${monthIncome?Math.max(0,Math.round((1-monthSpent/Math.max(monthIncome,1))*100)):0}% less relative to income this month.</div><div style="margin-top:7px">✦ Savings this month: ${money(Math.max(0,monthIncome-monthSpent))}</div><div style="margin-top:7px">✦ Ask me to connect your finances, tasks and habits.</div></div><button type="button" class="hub-link hub-ai-btn" onclick="document.getElementById('aiInput').value='Plan my day'; toggleAiPanel(); sendAIPrompt();"><span>✦ Ask Co-pilot</span><span>›</span></button></div>`;
+    W.ai=`<div class="hub-card" data-w="ai"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon">✦</span><span><span>Co-pilot</span><span class="hub-card-sub">AI-powered insights for you</span></span></div><button type="button" class="hub-card-nav" aria-label="Open Co-pilot" title="Open Co-pilot" onclick="toggleAiPanel()">›</button></div><div class="hub-insight"><div>✦ You’ve spent ${monthIncome?Math.max(0,Math.round((1-monthSpent/Math.max(monthIncome,1))*100)):0}% less relative to income this month.</div><div style="margin-top:7px">✦ Savings this month: ${money(Math.max(0,monthIncome-monthSpent))}</div><div style="margin-top:7px">✦ Ask me to connect your finances, tasks and habits.</div></div><button type="button" class="hub-link hub-ai-btn" onclick="document.getElementById('aiInput').value='Plan my day'; toggleAiPanel(); sendAIPrompt();"><span>✦ Ask Co-pilot</span><span>›</span></button></div>`;
 
     W.actions=`<div class="hub-card" data-w="actions"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon amber">ϟ</span><span><span>Quick Actions</span><span class="hub-card-sub">Common actions at your fingertips</span></span></div></div><div class="hub-action-grid">${action('−','Add Expense',"openTxn('expense')",'red')}${action('+','Add Income',"openTxn('income')",'green')}${action('⇄','Transfer',"showTab('transfers')",'')}${action('✓','New Task',"showTab('tasks')",'green')}${action('▤','New Journal',"openJournalEntryModal(today())",'pink')}${action('◔','Add Budget',"showTab('budgets')",'amber')}${action('◎','Add Goal',"showTab('wishlist')",'purple')}${action('☁','Upload File',"showTab('vault')",'')}</div></div>`;
 
-    W.transactions=`<div class="hub-card wide" data-w="transactions"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon">≡</span><span><span>Recent Transactions</span><span class="hub-card-sub">Latest ${recent.length} transactions</span></span></div><button class="linklike" onclick="showTab('transactions')">View All Transactions ›</button></div><div class="hub-card-scroll hub-txn-list">${recentRows||'<div class="hub-empty">No transactions yet.</div>'}</div><div style="display:flex;justify-content:flex-end;"><button class="linklike" onclick="showTab('transactions')">View All Transactions ›</button></div></div>`;
+    W.transactions=`<div class="hub-card wide" data-w="transactions"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon">≡</span><span><span>Recent Transactions</span><span class="hub-card-sub">Latest ${recent.length} transactions</span></span></div><button type="button" class="hub-card-nav" aria-label="Open Transactions" title="Open Transactions" onclick="showTab('transactions')">›</button></div><div class="hub-card-scroll hub-txn-list">${recentRows||'<div class="hub-empty">No transactions yet.</div>'}</div></div>`;
 
     var layout=MODE_LAYOUT[platformMode]||MODE_LAYOUT.overview;
     grid.innerHTML=layout.order.map(k=>W[k]||'').join('');
@@ -970,8 +991,29 @@ function editBudget(id){let x=state.budgets.find(a=>a.id===id);openModal("Edit B
 function editInvestment(id){let x=state.investments.find(a=>a.id===id);openModal("Edit Investment",`<form id="editForm" class="form"><div class="field"><label>Name</label><input id="iName" required value="${esc(x.name)}"></div><div class="row"><div class="field"><label>Amount</label><input id="iAmt" type="number" step=".01" required value="${x.amount}"></div><div class="field"><label>Date</label><input id="iDate" type="date" required value="${x.date}"></div></div><div class="field"><label>Type</label><input id="iType" required value="${esc(x.type)}"></div><div class="field"><label>Maturity</label><input id="iMat" type="date" value="${x.maturity||""}"></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); document.getElementById('editForm').onsubmit=async e=>{e.preventDefault();x.name=document.getElementById('iName').value;x.amount=+document.getElementById('iAmt').value;x.date=document.getElementById('iDate').value;x.type=document.getElementById('iType').value;x.maturity=document.getElementById('iMat').value;await put("investments",x);closeModal();}}
 function editDebt(id){let x=state.debts.find(a=>a.id===id);openModal("Edit Debt",`<form id="editForm" class="form"><div class="field"><label>Name</label><input id="dName" required value="${esc(x.name)}"></div><div class="row"><div class="field"><label>Amount</label><input id="dAmt" type="number" step=".01" required value="${x.amount}"></div><div class="field"><label>APR %</label><input id="dApr" type="number" step=".01" value="${x.apr||0}"></div></div><div class="row"><div class="field"><label>Date</label><input id="dDate" type="date" required value="${x.date}"></div><div class="field"><label>Type</label><input id="dType" required value="${esc(x.type)}"></div></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); document.getElementById('editForm').onsubmit=async e=>{e.preventDefault();x.name=document.getElementById('dName').value;x.amount=+document.getElementById('dAmt').value;x.apr=+document.getElementById('dApr').value;x.date=document.getElementById('dDate').value;x.type=document.getElementById('dType').value;await put("debts",x);closeModal();}}
 
-function openModal(t,b){document.getElementById('modalTitle').textContent=t;document.getElementById('modalBody').innerHTML=b;document.getElementById('modal').classList.add("open")}
-function closeModal(){document.getElementById('modal').classList.remove("open")}
+function openModal(t,b){
+    const modal=document.getElementById('modal');
+    const title=document.getElementById('modalTitle');
+    const body=document.getElementById('modalBody');
+    if(!modal||!title||!body)return;
+    title.textContent=t;
+    body.innerHTML=b;
+    modal.classList.add('open');
+    const first=body.querySelector('input,select,textarea,button');
+    if(first && first.tagName!=='BUTTON') setTimeout(()=>first.focus(),40);
+}
+function closeModal(){const modal=document.getElementById('modal');if(modal)modal.classList.remove('open')}
+document.addEventListener('keydown',e=>{
+    if(e.key!=='Escape')return;
+    closeModal();
+    const jm=document.getElementById('entryModal');
+    if(jm)jm.classList.remove('open');
+});
+document.addEventListener('click',e=>{
+    if(e.target.id==='modal')closeModal();
+    if(e.target.id==='entryModal')e.target.classList.remove('open');
+});
+
 
 
 function formatDateApple(v){if(!v)return "Select date";let d=new Date(v+"T00:00:00");return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});}
@@ -1082,7 +1124,7 @@ async function sendAIPrompt() {
     earnedThisMonth: state.expenses.filter(x=>x.date.startsWith(m) && x.type==='income').reduce((s,x)=>s+x.amount,0), totalDebt: state.debts.reduce((s,x)=>s+x.amount,0), totalInvested: state.investments.reduce((s,x)=>s+x.amount,0)
   };
   
-  const systemInstruction = `You are a fast, helpful financial AI for Expense Manager. 
+  const systemInstruction = `You are a fast, helpful financial AI for ONEVA. 
 Data Snapshot:
 Accounts: ${accData}
 Investments: ${invData}

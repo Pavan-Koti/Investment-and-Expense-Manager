@@ -11,7 +11,7 @@
  --text:#1d1d1f;--muted:#6e6e73;--hair:rgba(0,0,0,.08);
  --accent:#2563eb;--accentSoft:rgba(37,99,235,.10);
  --green:#10b981;--red:#ef4444;--amber:#f59e0b;
- --shadow:0 8px 30px rgba(0,0,0,.055);
+ --shadow:0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
  --hover-bg: #f3f4f6; --active-bg: #eff6ff; --active-text: #2563eb;
  --text-primary: #111827; --text-secondary: #6b7280; --border: #e5e7eb;
 }
@@ -19,7 +19,7 @@ body.dark{
  --bg-main:#0f1115; --bg-sidebar:#16181d; --page-bg: #e5e5e0;
  --bg:#1c1c1e;--surface:rgba(38,38,40,.88);--surface2:rgba(44,44,46,.72);
  --text:#f5f5f7;--muted:#98989d;--hair:rgba(255,255,255,.10);
- --accent:#3b82f6;--accentSoft:rgba(59,130,246,.14);
+ --accent:#3b82f6;--accentSoft:rgba(59,130,246,.15);
  --green:#45c992;--red:#ff7180;--amber:#f2ba50;
  --shadow:0 10px 35px rgba(0,0,0,.22);
  --hover-bg: #202329; --active-bg: #1e293b; --active-text: #60a5fa;
@@ -29,14 +29,13 @@ body.dark{
 html{scroll-behavior:smooth}
 body{ margin:0;min-height:100vh;color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif; font-size:14px;font-weight:400;letter-spacing:-.006em; background:var(--bg-main); display: flex; overflow: hidden; }
 button,input,select,textarea{font:inherit}
-button,.filebtn{ border:1px solid var(--border);background:var(--surface2);color:var(--text); padding:7px 11px;border-radius:9px;cursor:pointer;font-weight:500; transition:all .15s; }
+button,.filebtn{ border:1px solid var(--border);background:var(--surface2);color:var(--text); padding:7px 11px;border-radius:6px;cursor:pointer;font-weight:500; transition:all .15s; }
 button:hover,.filebtn:hover{background:var(--hover-bg);box-shadow:0 3px 12px rgba(0,0,0,.06)}
 button:active{transform:scale(.98)}
 button.primary{background:var(--accent);border-color:transparent;color:#fff;font-weight:600}
 button.danger{color:var(--red); border-color:var(--border);} button.danger:hover{background:rgba(239,68,68,.1);}
 button.success{color:var(--green); border-color:var(--border);} button.outline{background:transparent; border:1px solid var(--border); color:var(--text);}
 
-/* Landing Page */
 #landingPage { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; padding:20px; text-align:center; width: 100%; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); position: absolute; z-index: 100000; top: 0; left: 0; }
 body.dark #landingPage { background: linear-gradient(135deg, #121212 0%, #1e1e24 100%); }
 .landing-card { background:var(--surface); border:1px solid var(--hair); border-radius:24px; padding:50px 40px; box-shadow:0 20px 50px rgba(0,0,0,0.08); max-width:440px; width:100%; backdrop-filter:blur(25px); }
@@ -49,17 +48,19 @@ body.dark .landing-card { box-shadow:0 20px 50px rgba(0,0,0,0.4); }
 .spinner { border: 3px solid var(--hair); border-top: 3px solid var(--accent); border-radius: 50%; width: 28px; height: 28px; animation: spin 1s linear infinite; margin: 0 auto 16px; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* App Layout & Sidebar (Accordion) */
+/* Workspace Layout */
 .app-container { display: flex; width: 100%; height: 100vh; }
 .sidebar { width: 260px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; z-index: 20; }
 .sidebar-header { height: 64px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 16px; gap: 10px; }
 .brand-icon-small { width: 28px; height: 28px; background-color: var(--accent); color: white; border-radius: 6px; display: grid; place-items: center; font-size: 14px; }
 .sidebar-scroll-area { flex: 1; overflow-y: auto; padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; }
+
 .nav-item { display: flex; align-items: center; width: 100%; padding: 10px 12px; border-radius: 6px; color: var(--text-primary); font-size: 14px; font-weight: 500; cursor: pointer; border: none; background: transparent; transition: all 0.15s ease; text-align: left;}
 .nav-item:hover { background-color: var(--hover-bg); }
 .nav-item.active { background-color: var(--active-bg); color: var(--active-text); }
 .nav-item .icon { margin-right: 12px; font-size: 16px; color: var(--text-secondary); width: 20px; text-align: center; }
 .nav-item.active .icon { color: var(--active-text); }
+
 .nav-group { display: flex; flex-direction: column; }
 .nav-group-header { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); background: transparent; border: none; cursor: pointer; border-radius: 6px; transition: background 0.15s; }
 .nav-group-header:hover { background-color: var(--hover-bg); color: var(--text-primary); }
@@ -75,13 +76,14 @@ body.dark .landing-card { box-shadow:0 20px 50px rgba(0,0,0,0.4); }
 .main-content { flex: 1; display: flex; flex-direction: column; position: relative; }
 .topbar { height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--border); background-color: var(--bg-sidebar); flex-shrink: 0; z-index:10;}
 .content-area { flex: 1; min-width:0; padding: 24px; overflow-y:auto; display: flex; flex-direction: column;}
-.content-wrapper { max-width: 1380px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; }
+.content-wrapper { max-width: 1380px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; flex: 1; min-height: 0; }
 section { display: none; flex: 1; min-height: 0; padding-bottom: 15px; flex-direction: column; animation: fadeIn 0.2s ease-in-out; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
 
 .top { display:flex; justify-content:space-between; align-items:center; gap:15px; margin:4px 0 22px; flex-wrap:wrap; flex-shrink:0; }
 .top h1 { margin:0; font-size:26px; line-height:1.1; font-weight:600; letter-spacing:-.035em; color:var(--text-primary); }
 .sub { color:var(--muted); margin-top:5px; font-size:13px; }
+
 .user-dropdown-container { position:relative; display:inline-block; }
 .top-user-pill { display:flex; align-items:center; gap:10px; background:var(--surface); padding:5px 12px 5px 5px; border-radius:30px; border:1px solid var(--hair); box-shadow:var(--shadow); cursor:pointer; user-select:none; }
 .top-user-pill img { width:34px; height:34px; border-radius:50%; object-fit:cover; }
@@ -107,16 +109,13 @@ section { display: none; flex: 1; min-height: 0; padding-bottom: 15px; flex-dire
 .status-dot.syncing { background:var(--amber); box-shadow: 0 0 6px var(--amber); }
 
 .grid{display:grid;gap:10px;margin-bottom:18px}
-.card{ background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:15px; box-shadow:var(--shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px) }
-.hero{min-height:116px;display:flex;flex-direction:column;justify-content:space-between}.eyebrow{font-size:11px;color:var(--muted);font-weight:400}
-.hero .money{font-size:32px;letter-spacing:-.045em;font-weight:600;margin-top:5px}.hero .caption{font-size:11px;color:var(--muted)}
+.card{ background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:15px; box-shadow:var(--shadow); }
 .kpi .label{font-size:11px;color:var(--muted);font-weight:400}.kpi .value{font-size:21px;font-weight:500;margin-top:6px;letter-spacing:-.025em;white-space:nowrap}
 .income{color:var(--green)}.expense{color:var(--red)}.warning{color:var(--amber)}
 
 .dash-tabs-wrap { display:flex; flex-direction:column; padding:0; overflow:hidden; flex:1; min-height:0; margin-bottom:0 !important; }
 .dash-tabs { display:flex; border-bottom:1px solid var(--hair); background:var(--surface2); flex-shrink:0; }
 .dash-tab-btn { flex:1; border:none; border-bottom:2px solid transparent; background:transparent; padding:14px 10px; font-weight:600; color:var(--muted); cursor:pointer; font-size:13px; transition:all 0.2s; border-radius:0; }
-.dash-tab-btn:hover { background:var(--surface); color:var(--text); }
 .dash-tab-btn.active { border-bottom-color:var(--accent); color:var(--accent); background:var(--surface); }
 .dash-panes { flex:1; overflow-y:auto; padding:15px; min-height:0; }
 .dash-pane { display: none; animation: fadeIn 0.2s ease-in-out; } .dash-pane.active { display: block; }
@@ -125,98 +124,38 @@ section { display: none; flex: 1; min-height: 0; padding-bottom: 15px; flex-dire
 .sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:11px}.sectionhead h2{font-size:16px;letter-spacing:-.02em;margin:0;font-weight:550}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.layout{display:grid;grid-template-columns:320px minmax(0,1fr);gap:12px}
 .form{display:grid;gap:10px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.field label{display:block;font-size:11px;font-weight:400;color:var(--muted);margin:0 0 5px 1px}
-input,select,textarea{ width:100%;padding:9px 10px;border:1px solid var(--hair);border-radius:9px; background:var(--surface2);color:var(--text);outline:none;font-weight:400; height:36px; box-sizing:border-box; }
+.field label{display:block;font-size:11px;font-weight:500;color:var(--muted);margin:0 0 5px 1px}
+input,select,textarea{ width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:6px; background:var(--surface);color:var(--text);outline:none;font-weight:400; height:36px; box-sizing:border-box; }
 textarea{resize:vertical;min-height:72px; height:auto;}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accentSoft)}
 input[type="date"], input[type="month"]{display:none}
 .datefield{position:relative}
-.datebutton{width:100%;text-align:left;display:flex;justify-content:space-between;align-items:center;background:var(--surface2);font-weight:400; padding:9px 10px; border:1px solid var(--hair); border-radius:9px; height:36px; box-sizing:border-box;}
-.datebutton .calicon{opacity:.5}
+.datebutton{width:100%;text-align:left;display:flex;justify-content:space-between;align-items:center;background:var(--surface);font-weight:400; padding:9px 10px; border:1px solid var(--border); border-radius:6px; height:36px; box-sizing:border-box;}
 .filters{display:grid;grid-template-columns:1fr 145px 145px;gap:7px;margin-bottom:10px}
 .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:700px}
-th,td{text-align:left;padding:10px 6px;border-bottom:1px solid var(--hair);white-space:nowrap}
+th,td{text-align:left;padding:10px 6px;border-bottom:1px solid var(--border);white-space:nowrap}
 th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.045em;font-weight:500}td{font-weight:400}
 .amount{text-align:right;font-weight:500}
-.empty{text-align:center;color:var(--muted);padding:26px}
-.item{padding:11px 12px;border:1px solid var(--hair);border-radius:11px;background:transparent}
+.empty{text-align:center;color:var(--muted);padding:26px; font-style: italic;}
+.item{padding:11px 12px;border:1px solid var(--border);border-radius:11px;background:var(--surface2)}
 .list{display:grid;gap:7px}.itemtop{display:flex;justify-content:space-between;gap:10px}.itemmeta{font-size:11px;color:var(--muted);margin-top:4px}.small{font-size:11px;color:var(--muted)}
-.pill{padding:4px 7px;border-radius:999px;font-size:10px;font-weight:500}.pill.good{background:rgba(24,134,91,.10);color:var(--green)}.pill.bad{background:rgba(201,52,69,.09);color:var(--red)}.pill.warn{background:rgba(165,106,8,.10);color:var(--amber)}
+.pill{padding:4px 7px;border-radius:999px;font-size:10px;font-weight:500}.pill.good{background:rgba(16,185,129,.10);color:var(--green)}.pill.bad{background:rgba(239,68,68,.09);color:var(--red)}.pill.warn{background:rgba(245,158,11,.10);color:var(--amber)}
 .progress{margin-top:8px}.progresshead{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px}.bar{height:5px;background:var(--hair);border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);border-radius:8px}
-.insight{padding:11px;border:1px solid var(--hair);border-radius:11px;margin-bottom:10px;background:transparent}.insight b{display:block;margin-bottom:4px;font-weight:600; font-size:13px;}
-.insight p{margin:0; font-size:12px; color:var(--muted); line-height:1.4;}
+
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;padding:16px;z-index:9000;backdrop-filter:blur(7px)}
-.modal.open{display:flex}.modalbox{background:var(--surface);border:1px solid var(--hair);border-radius:17px;padding:18px;max-width:540px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 25px 80px rgba(0,0,0,.18);backdrop-filter:blur(25px)}
+.modal.open{display:flex}.modalbox{background:var(--surface);border:1px solid var(--border);border-radius:17px;padding:18px;max-width:540px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 25px 80px rgba(0,0,0,.18);}
 .modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h2{margin:0;font-size:18px;font-weight:550}.modalactions{display:flex;justify-content:flex-end;gap:7px;margin-top:14px}
-.dialog-modal .modalbox{max-width:380px; text-align:center;} .dialog-modal .dialog-text{font-size:14px; margin-bottom:15px; color:var(--text);} .dialog-modal input{margin-top: 10px;} .dialog-modal .modalactions{justify-content: center;}
-.calendar{position:fixed;z-index:9999;width:292px;padding:12px;border:1px solid var(--hair);border-radius:14px;background:var(--surface);box-shadow:0 18px 55px rgba(0,0,0,.16);backdrop-filter:blur(25px);display:none; transform-origin: top left; transition: opacity 0.15s; opacity:0;}
-.calendar.open{display:block; opacity:1;}.calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.calmonth{font-size:13px;font-weight:550}.calnav{display:flex;gap:3px}.calnav button{padding:5px 8px;border-radius:8px}
+.dialog-modal .modalbox{max-width:380px; text-align:center;} .dialog-modal .dialog-text{font-size:14px; margin-bottom:15px; color:var(--text);} .dialog-modal .modalactions{justify-content: center;}
+
+.calendar{position:fixed;z-index:9999;width:292px;padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--surface);box-shadow:0 18px 55px rgba(0,0,0,.16);backdrop-filter:blur(25px);display:none;}
+.calendar.open{display:block; opacity:1;}
+.calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.calmonth{font-size:13px;font-weight:550}.calnav{display:flex;gap:3px}.calnav button{padding:5px 8px;border-radius:8px}
 .calweek,.caldays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}.calweek span{font-size:9px;color:var(--muted);text-align:center;padding:3px 0}.calday{border:0;background:transparent;padding:6px 0;border-radius:7px;color:var(--text);font-size:11px;font-weight:400}.calday:hover{background:var(--accentSoft);color:var(--accent)}.calday.muted{color:var(--muted);opacity:.45}.calday.today{box-shadow:inset 0 0 0 1px var(--accent);color:var(--accent)}.calday.selected{background:var(--accent);color:#fff}.caltoday{width:100%;margin-top:7px;font-size:10px;padding:6px}
 
-/* Morning Briefing Overlay */
-#morningBriefing { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
-.story-container { width:100%; max-width:400px; height:80vh; max-height:750px; background:linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%); border-radius:24px; position:relative; overflow:hidden; display:flex; flex-direction:column; padding:20px; box-shadow: 0 30px 60px rgba(0,0,0,0.4); color:var(--text); border:1px solid var(--hair); }
-body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1c1e 100%); }
-.story-bars { display:flex; gap:4px; margin-bottom:20px; } .story-bar { flex:1; height:4px; background:rgba(120,120,128,0.3); border-radius:4px; overflow:hidden; } .story-bar-fill { height:100%; width:0%; background:var(--accent); transition:width 0.3s; }
-.story-content { flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center; padding:20px; } .story-title { font-size:26px; font-weight:700; margin-bottom:15px; line-height:1.2; letter-spacing:-0.03em; } .story-text { font-size:16px; color:var(--muted); line-height:1.5; }
-.story-nav-layer { position:absolute; inset:0; display:flex; margin-top:30px;} .story-left { width:30%; cursor:pointer; } .story-right { width:70%; cursor:pointer; }
-.story-close { position:absolute; top:30px; right:20px; z-index:10; background:transparent; border:none; font-size:20px; color:var(--muted); cursor:pointer;}
-
 .summary-grid{display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:12px !important;width:100% !important;margin:0 0 18px !important;align-items:stretch !important; flex-shrink:0;}
-.summary-grid > .card{width:100% !important;min-width:0 !important;margin:0 !important;}
-.summary-grid .hero,.summary-grid .kpi{min-height:116px !important;height:100% !important;}
-.financial-summary{display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:12px !important;width:100% !important;margin:0 0 18px !important;align-items:stretch !important;}
 .financial-summary > .card{width:100% !important;min-width:0 !important;margin:0 !important;height:116px !important;}
 
-/* ===================== Hub / Command Center Specifics ===================== */
-.hub-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px;flex-wrap:wrap}
-.hub-greeting{margin:0;font-size:24px;font-weight:650;letter-spacing:-.03em} .hub-sub{margin:5px 0 0;color:var(--muted);font-size:13px}
-.mode-switch{display:inline-flex;background:var(--surface2);border:1px solid var(--hair);border-radius:12px;padding:3px;gap:2px}
-.mode-switch button{border:none;background:transparent;padding:7px 14px;border-radius:9px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
-.mode-switch button:hover{color:var(--text);box-shadow:none;background:transparent}
-.mode-switch button.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px var(--accentSoft)}
-.hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-content:start}
-.hub-card{background:var(--surface);border:1px solid var(--hair);border-radius:16px;padding:16px;box-shadow:var(--shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;flex-direction:column;gap:12px;animation:fadeIn .25s ease}
-.hub-card.wide{grid-column:1 / -1}
-.hub-card-h{display:flex;justify-content:space-between;align-items:center;font-weight:650;font-size:14px}
-.linklike{border:none;background:transparent;color:var(--accent);font-weight:600;font-size:12px;cursor:pointer;padding:2px 4px}
-.linklike:hover{text-decoration:underline;background:transparent;box-shadow:none}
-.hub-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px} .hm-label{font-size:11px;color:var(--muted)} .hm-val{font-size:20px;font-weight:600;margin-top:3px;letter-spacing:-.02em;white-space:nowrap}
-.hub-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--hair)} .hub-row:last-child{border-bottom:none;padding-bottom:0}
-.hub-row .grow{flex:1;min-width:0} .hub-row .grow b{font-size:13px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .hub-row .grow .sub{font-size:11px;color:var(--muted);margin-top:1px}
-.hub-empty{color:var(--muted);font-size:12px;padding:8px 0}
-.mini-check{flex-shrink:0;width:22px;height:22px;border-radius:7px;border:1.5px solid var(--hair);background:transparent;color:#fff;cursor:pointer;display:grid;place-items:center;font-size:12px;font-weight:700;padding:0;transition:all .15s}
-.mini-check:hover{border-color:var(--accent)} .mini-check.on{background:var(--green);border-color:transparent;box-shadow:0 0 9px rgba(24,134,91,.4)}
-.hub-ai-btn{width:100%;justify-content:center;font-weight:600;display:flex;align-items:center;gap:8px}
-
-/* ===================== Butterfly Effect & Time Machine ===================== */
-#butterflyOverlay{position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center,rgba(12,12,24,.82),rgba(0,0,0,.93));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);opacity:0;visibility:hidden;transition:opacity .5s ease,visibility .5s;cursor:pointer;padding:24px}
-#butterflyOverlay.show{opacity:1;visibility:visible}
-.bf-ripple{position:absolute;top:50%;left:50%;width:20px;height:20px;border-radius:50%;transform:translate(-50%,-50%);border:1.5px solid var(--accent);opacity:0;pointer-events:none}
-#butterflyOverlay.show .bf-ripple{animation:bfRipple 3s ease-out forwards}
-@keyframes bfRipple{0%{width:20px;height:20px;opacity:.9;box-shadow:0 0 30px var(--accent)}100%{width:150vmax;height:150vmax;opacity:0;box-shadow:0 0 120px var(--accent)}}
-.bf-content{position:relative;text-align:center;max-width:460px;color:#fff;transform:translateY(14px);opacity:0}
-#butterflyOverlay.show .bf-content{animation:bfContent .6s .25s ease-out forwards}
-@keyframes bfContent{to{transform:translateY(0);opacity:1}}
-.bf-eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;font-weight:600}
-.bf-title{font-size:34px;font-weight:700;letter-spacing:-.03em;margin-bottom:16px;text-shadow:0 0 30px rgba(142,141,245,.6);line-height:1.15}
-.bf-detail{font-size:15px;line-height:1.6;color:rgba(255,255,255,.82)}
-.bf-hint{margin-top:26px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4)}
-
-#timeMachine{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:500;display:none}
-.tm-inner{display:flex;flex-direction:column;gap:8px;align-items:center;padding:12px 18px 10px;border-radius:18px;background:var(--surface);border:1px solid var(--hair);box-shadow:0 12px 40px rgba(0,0,0,.18);backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);min-width:320px}
-.tm-label{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--accent);text-align:center} .tm-label.live{color:var(--green)}
-.tm-controls{display:flex;align-items:center;gap:12px;width:100%}
-#tmRange{-webkit-appearance:none;appearance:none;height:5px;border:none;border-radius:8px;flex:1;background:linear-gradient(90deg,var(--accent),var(--accentSoft));outline:none;padding:0}
-#tmRange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);cursor:pointer;box-shadow:0 0 12px var(--accent),0 2px 6px rgba(0,0,0,.25)}
-#tmRange::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);cursor:pointer;box-shadow:0 0 12px var(--accent)}
-.tm-now{flex-shrink:0;font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px}
-.tm-ticks{display:flex;justify-content:space-between;width:100%;font-size:9px;color:var(--muted);letter-spacing:.05em;padding:0 2px}
-#timePastBadge{display:none;position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:600;background:var(--amber);color:#fff;font-size:12px;font-weight:650;padding:7px 16px;border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.28);letter-spacing:.01em}
-body.dark #timePastBadge{color:#1c1c1e}
-.app-container.time-past .main-content{outline:2px solid var(--amber);outline-offset:-4px;border-radius:14px;transition:outline-color .3s}
-
-/* ===================== Habits, Tasks, Vault ===================== */
+/* Habits, Tasks, Vault */
 .habit{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface2)}
 .habit .grow{flex:1;min-width:0} .habit-name{font-weight:600;font-size:14px}
 .streak{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--amber);margin-top:3px} .streak.cold{color:var(--muted)}
@@ -233,7 +172,53 @@ body.dark #timePastBadge{color:#1c1c1e}
 .vault-row .grow{flex:1;min-width:0} .vault-name{font-weight:600;font-size:14px;word-break:break-word} .vault-meta{display:flex;align-items:center;gap:10px;margin-top:5px;font-size:11px;color:var(--muted);flex-wrap:wrap} .vault-when{font-weight:600} .vault-when.soon{color:var(--amber)} .vault-when.over{color:var(--red)}
 .sub-burn{display:flex;gap:26px;padding:13px 16px;border:1px solid var(--border);border-radius:12px;background:var(--accentSoft);margin-bottom:14px} .sub-burn .l{font-size:11px;color:var(--muted)} .sub-burn .v{font-size:18px;font-weight:650;color:var(--accent);margin-top:3px} .sub-due{font-size:11px;font-weight:600;color:var(--muted)} .sub-due.soon{color:var(--red)}
 
-/* ===================== SCRAPBOOK JOURNAL ===================== */
+/* Hub specific */
+.hub-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.hub-greeting{margin:0;font-size:24px;font-weight:650;letter-spacing:-.03em} .hub-sub{margin:5px 0 0;color:var(--muted);font-size:13px}
+.mode-switch{display:inline-flex;background:var(--surface2);border:1px solid var(--hair);border-radius:12px;padding:3px;gap:2px}
+.mode-switch button{border:none;background:transparent;padding:7px 14px;border-radius:9px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+.mode-switch button:hover{color:var(--text);box-shadow:none;background:transparent}
+.mode-switch button.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px var(--accentSoft)}
+.hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-content:start}
+.hub-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px; animation:fadeIn .25s ease;} .hub-card.wide{grid-column:1 / -1}
+.hub-card-h{display:flex;justify-content:space-between;align-items:center;font-weight:650;font-size:14px}
+.hub-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px} .hm-label{font-size:11px;color:var(--muted)} .hm-val{font-size:20px;font-weight:600;margin-top:3px;letter-spacing:-.02em;white-space:nowrap}
+.hub-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--hair)} .hub-row:last-child{border-bottom:none;padding-bottom:0}
+.hub-row .grow{flex:1;min-width:0} .hub-row .grow b{font-size:13px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .hub-row .grow .sub{font-size:11px;color:var(--muted);margin-top:1px}
+.hub-empty{color:var(--muted);font-size:12px;padding:8px 0}
+.mini-check{flex-shrink:0;width:22px;height:22px;border-radius:7px;border:1.5px solid var(--hair);background:transparent;color:#fff;cursor:pointer;display:grid;place-items:center;font-size:12px;font-weight:700;padding:0;transition:all .15s}
+.mini-check:hover{border-color:var(--accent)} .mini-check.on{background:var(--green);border-color:transparent;box-shadow:0 0 9px rgba(16,185,129,.4)}
+.hub-ai-btn{width:100%;justify-content:center;font-weight:600;display:flex;align-items:center;gap:8px}
+.linklike{border:none;background:transparent;color:var(--accent);font-weight:600;font-size:12px;cursor:pointer;padding:2px 4px} .linklike:hover{text-decoration:underline;}
+
+/* Time Machine & Butterfly Effect */
+#butterflyOverlay{position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center,rgba(12,12,24,.82),rgba(0,0,0,.93));backdrop-filter:blur(14px);opacity:0;visibility:hidden;transition:opacity .5s ease,visibility .5s;cursor:pointer;padding:24px}
+#butterflyOverlay.show{opacity:1;visibility:visible}
+.bf-ripple{position:absolute;top:50%;left:50%;width:20px;height:20px;border-radius:50%;transform:translate(-50%,-50%);border:1.5px solid var(--accent);opacity:0;pointer-events:none}
+#butterflyOverlay.show .bf-ripple{animation:bfRipple 3s ease-out forwards}
+@keyframes bfRipple{0%{width:20px;height:20px;opacity:.9;box-shadow:0 0 30px var(--accent)}100%{width:150vmax;height:150vmax;opacity:0;box-shadow:0 0 120px var(--accent)}}
+.bf-content{position:relative;text-align:center;max-width:460px;color:#fff;transform:translateY(14px);opacity:0}
+#butterflyOverlay.show .bf-content{animation:bfContent .6s .25s ease-out forwards}
+@keyframes bfContent{to{transform:translateY(0);opacity:1}}
+.bf-eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;font-weight:600}
+.bf-title{font-size:34px;font-weight:700;letter-spacing:-.03em;margin-bottom:16px;text-shadow:0 0 30px rgba(142,141,245,.6);line-height:1.15}
+.bf-detail{font-size:15px;line-height:1.6;color:rgba(255,255,255,.82)}
+.bf-hint{margin-top:26px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+
+#timeMachine{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:500;display:none}
+.tm-inner{display:flex;flex-direction:column;gap:8px;align-items:center;padding:12px 18px 10px;border-radius:18px;background:var(--surface);border:1px solid var(--hair);box-shadow:0 12px 40px rgba(0,0,0,.18);backdrop-filter:blur(25px);min-width:320px}
+.tm-label{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--accent);text-align:center} .tm-label.live{color:var(--green)}
+.tm-controls{display:flex;align-items:center;gap:12px;width:100%}
+#tmRange{-webkit-appearance:none;appearance:none;height:5px;border:none;border-radius:8px;flex:1;background:linear-gradient(90deg,var(--accent),var(--accentSoft));outline:none;padding:0}
+#tmRange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);cursor:pointer;box-shadow:0 0 12px var(--accent),0 2px 6px rgba(0,0,0,.25)}
+#tmRange::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);cursor:pointer;box-shadow:0 0 12px var(--accent)}
+.tm-now{flex-shrink:0;font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px}
+.tm-ticks{display:flex;justify-content:space-between;width:100%;font-size:9px;color:var(--muted);letter-spacing:.05em;padding:0 2px}
+#timePastBadge{display:none;position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:600;background:var(--amber);color:#fff;font-size:12px;font-weight:650;padding:7px 16px;border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.28);letter-spacing:.01em}
+body.dark #timePastBadge{color:#1c1c1e}
+.app-container.time-past .main-content{outline:2px solid var(--amber);outline-offset:-4px;border-radius:14px;transition:outline-color .3s}
+
+/* --- SCRAPBOOK JOURNAL --- */
 .journal-layout { display: flex; gap: 8px; height: 100%; min-height: 0; }
 .journal-index { width: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; overflow-y: auto; flex-shrink: 0; }
 .journal-index h4 { margin: 0 0 10px 0; font-size: 11px; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
@@ -256,26 +241,25 @@ body.dark #timePastBadge{color:#1c1c1e}
 .draggable-media video { width: 100%; height: auto; border: 1px solid #eee; pointer-events: auto; }
 .draggable-media .pin { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); width: 10px; height: 10px; background: #ef4444; border-radius: 50%; box-shadow: 1px 2px 3px rgba(0,0,0,0.3); }
 
-/* CORRECTED MOBILE MEDIA QUERY */
 @media(max-width:900px){
   .app-container{flex-direction:column;}
   .sidebar{width:100%; height:auto; border-right:none; border-bottom:1px solid var(--border); flex-shrink:0;}
   .sidebar-scroll-area{flex-direction:column; padding:10px; max-height: 35vh;} 
-  /* Removed the display:none that was hiding all nav groups! */
   .layout,.two{grid-template-columns:1fr}
   .topbar{padding:0 15px;}
   .journal-layout{flex-direction:column; height:auto;}
   .journal-index{width:100%; max-height:150px;}
   .book-page{min-height:500px;}
+  #timeMachine{width: 90%;}
 }
 @media(max-width:700px){.summary-grid,.financial-summary{grid-template-columns:1fr !important}}
 </style>
 </head>
-<body data-product-version="V30.2-PROD-RESTORED-MAX">
+<body data-product-version="V30.3-PROD-RESTORED-MAX-HUD">
 
 <div id="landingPage">
     <div class="landing-card">
-        <div class="brand-icon">₹</div>
+        <div class="brand-icon">◈</div>
         <h1>Personal OS</h1>
         <p>Your secure, intelligent personal finance & life planner. Sign in to seamlessly sync your portfolio across all your devices.</p>
         <div id="landingAuth">
@@ -310,7 +294,7 @@ body.dark #timePastBadge{color:#1c1c1e}
 
 <div class="app-container" id="appContent" style="display:none;">
 <aside class="sidebar">
-  <div class="sidebar-header"><div class="brand-icon-small">₹</div><span>Personal OS</span></div>
+  <div class="sidebar-header"><div class="brand-icon-small">◈</div><span>Personal OS</span></div>
   <div class="sidebar-scroll-area" id="sideNav">
     <button type="button" class="nav-item active" data-tab="hub"><span class="icon">◈</span> Command Center</button>
     
@@ -416,7 +400,7 @@ body.dark #timePastBadge{color:#1c1c1e}
   </div>
 </div>
 
-<!-- COMMAND CENTER HUB WITH ALL ORIGINAL FEATURES RESTORED -->
+<!-- COMMAND CENTER HUB -->
 <section id="hub" style="display:block;">
   <div class="hub-head">
     <div><h2 class="hub-greeting" id="hubGreeting">Welcome back</h2><p class="hub-sub" id="hubSub">Your whole day, connected in one place.</p></div>
@@ -497,7 +481,7 @@ body.dark #timePastBadge{color:#1c1c1e}
 
 <!-- ANALYTICS & SETTINGS -->
 <section id="analytics"><div class="summary-grid"><div class="card kpi"><div class="label">Lifetime Income</div><div id="anaIncome" class="value income">₹0</div></div><div class="card kpi"><div class="label">Lifetime Expense</div><div id="anaExpense" class="value expense">₹0</div></div><div class="card kpi"><div class="label">Total Investments</div><div id="anaInvestments" class="value" style="color:var(--accent)">₹0</div></div><div class="card kpi"><div class="label">Total Active Debt</div><div id="anaDebt" class="value warning">₹0</div></div></div><div class="two"><div class="card"><h2>Account Growth (Income vs Expense)</h2><div id="growthChart" style="margin-top:20px;"></div></div><div class="card"><h2>Portfolio Balance (Net Worth Estimate)</h2><div id="netWorthChart" style="margin-top:20px;"></div></div></div></section>
-<section id="settings"><div class="layout"><div class="card"><h2>Data Sync</h2><div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; margin-top:10px;"><span class="status-dot" id="tabSyncDot" style="width:14px; height:14px;"></span><b id="syncStatusText">Checking Connection...</b></div><p class="small" style="line-height:1.5;">Your data is automatically synced to your private Google Drive using an isolated application folder. Your data is 100% secure and the developer or any third party applications won't have access to it.</p><div style="margin-top:18px; display:flex; gap:10px;"><button type="button" class="primary" onclick="forceSyncToDrive()" id="btnForceSync">Force Cloud Backup</button><button type="button" class="outline" onclick="syncOrInitDrive()">Pull Cloud Data</button></div></div><div class="card"><h2>Preferences & System</h2><div class="form" style="margin-top:10px;"><div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Appearance</span><button type="button" class="outline" onclick="toggleDark()">Toggle Dark Mode</button></div><div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Auto Log-Off (Inactivity)</span><select id="autoLogoffSelect" onchange="localStorage.setItem('expense-autologoff', this.value); idleTimer=0;" style="width:auto; padding:6px 10px;"><option value="1">1 Minute</option><option value="5">5 Minutes</option><option value="15">15 Minutes</option><option value="30">30 Minutes</option><option value="0">Never</option></select></div><div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Local Backup</span><div><button type="button" class="outline" onclick="backup()">Export JSON</button><label class="filebtn outline" style="margin-left:6px;">Import Data<input id="importFile" type="file" accept=".json" hidden></label></div></div><div style="margin-top:20px;"><p class="small" style="color:var(--red); margin-bottom:10px; font-weight:500;">Danger Zone</p><button type="button" class="danger" onclick="deleteProfile()" style="width:100%;">Delete Profile & Erase All Data</button></div></div></div></div></section>
+<section id="settings"><div class="layout"><div class="card"><h2>Data Sync</h2><div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; margin-top:10px;"><span class="status-dot" id="tabSyncDot" style="width:14px; height:14px;"></span><b id="syncStatusText">Checking Connection...</b></div><p class="small" style="line-height:1.5;">Your data is automatically synced to your private Google Drive using an isolated application folder. Your data is 100% secure and the developer or any third party applications won't have access to it.</p><div style="margin-top:18px; display:flex; gap:10px;"><button type="button" class="primary" onclick="forceSyncToDrive()" id="btnForceSync">Force Cloud Backup</button><button type="button" class="outline" onclick="syncOrInitDrive()">Pull Cloud Data</button></div></div><div class="card"><h2>Preferences & System</h2><div class="form" style="margin-top:10px;"><div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Appearance</span><button type="button" class="outline" onclick="toggleDark()">Toggle Dark Mode</button></div><div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Auto Log-Off (Inactivity)</span><select id="autoLogoffSelect" onchange="localStorage.setItem('expense-autologoff', this.value); idleTimer=0;" style="width:auto; padding:6px 10px;"><option value="1">1 Minute</option><option value="5">5 Minutes</option><option value="15">15 Minutes</option><option value="30">30 Minutes</option><option value="0">Never</option></select></div><div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; padding-bottom:12px; border-bottom:1px solid var(--hair);"><span style="font-weight:500;">Local Backup</span><div><button type="button" class="outline" onclick="backup()">Export JSON</button><label class="filebtn outline" style="margin-left:6px;">Import Data<input id="importFile" type="file" accept=".json" hidden></label></div></div><div style="margin-top:20px;"><p class="small" style="color:var(--red); margin-bottom:10px; font-weight:500;">Danger Zone</p><div style="display: flex; gap: 10px; flex-direction: column;"><button type="button" class="danger outline" onclick="eraseAllData()" style="width:100%;">Erase All Data (Keep Account)</button><button type="button" class="danger" onclick="deleteProfile()" style="width:100%;">Delete Profile & Disconnect</button></div></div></div></div></div></section>
 
 <!-- Overlays: Time Machine & Butterfly Effect -->
 <div id="butterflyOverlay" onclick="dismissButterfly()">
@@ -752,7 +736,7 @@ function renderVault(){
 }
 
 function renderAnalytics() {
-    const _vm = viewMonth || ym(); const _cut = viewMonth ? _vm+'-31' : '9999-99'; const _ex = state.expenses.filter(x=>x.date<=_cut);
+    const _vm = viewMonth || ym(); const _cut = viewMonth ? _vm+'-31' : '9999-99-99'; const _ex = state.expenses.filter(x=>x.date<=_cut);
     let totInc = _ex.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0); let totExp = _ex.filter(x=>x.type!=='income').reduce((s,x)=>s+x.amount,0); 
     let totInv = state.investments.filter(x=>(x.date||'')<=_cut).reduce((s,x)=>s+x.amount,0); let totDebt = state.debts.filter(x=>(x.date||'')<=_cut).reduce((s,x)=>s+x.amount,0);
     
@@ -772,9 +756,9 @@ function renderAnalytics() {
 var platformMode = localStorage.getItem('platform-mode') || 'overview';
 function setPlatformMode(m){ platformMode = m; localStorage.setItem('platform-mode', m); renderHub(); }
 var MODE_LAYOUT = {
-    overview: { order:['finance','tasks','habits','radar'], wide:['finance', 'radar'] },
-    focus:    { order:['tasks','habits','finance','radar'], wide:['tasks','habits'] },
-    wealth:   { order:['finance','radar','tasks','habits'], wide:['finance','radar'] }
+    overview: { order:['finance','tasks','habits','radar','journal','ai'], wide:['finance', 'radar'] },
+    focus:    { order:['tasks','habits','journal','ai','radar','finance'], wide:['tasks','habits'] },
+    wealth:   { order:['finance','radar','ai','tasks','habits','journal'], wide:['finance','radar'] }
 };
 
 function renderHub(){
@@ -803,6 +787,12 @@ function renderHub(){
     var radarRows = radar.slice(0,6).map(r=>{ var du = daysUntil(r.date); var when = du<0 ? ('overdue by '+(-du)+'d') : du===0 ? 'today' : du===1 ? 'tomorrow' : 'in '+du+' days'; return `<div class="hub-row"><div class="grow"><b>${esc(r.name)}</b><div class="sub${du<0?' sub-over':''}">${esc(r.kind)} · ${when}</div></div>${r.amount!=null?'<strong>'+money(r.amount)+'</strong>':''}</div>`; }).join('');
     W.radar = `<div class="__wide__" data-w="radar"><div class="hub-card-h"><span>📡 Radar · next 30 days</span><button class="linklike" onclick="showTab('planned')">Open →</button></div>${radarRows || '<div class="hub-empty">Nothing due in the next month.</div>'}</div>`;
     
+    var lastJ = [].concat(state.journal||[]).sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0];
+    var journalBody = lastJ ? `<div class="hub-row"><div class="grow"><b>Entry Logged</b><div class="sub">${lastJ.date?formatDateApple(lastJ.date):''}</div></div></div>${lastJ.date===today() ? '' : '<button class="linklike" style="align-self:flex-start; margin-top:10px;" onclick="showTab(\'journal\')">Log today →</button>'}` : '<div class="hub-empty">No entries yet. How did today feel?</div>';
+    W.journal = `<div class="__wide__" data-w="journal"><div class="hub-card-h"><span>✎ Reflection</span><button class="linklike" onclick="showTab('journal')">Open →</button></div>${journalBody}</div>`;
+    
+    W.ai = `<div class="__wide__" data-w="ai"><div class="hub-card-h"><span>✨ Copilot</span><button class="linklike" onclick="toggleAiPanel()">Chat →</button></div><div class="hub-empty" style="padding-top:0">I can see across every app. Ask me to connect the dots.</div><button type="button" class="primary hub-ai-btn" onclick="document.getElementById('aiInput').value='Plan my day'; toggleAiPanel(); sendAIPrompt();">✨ Plan my day</button></div>`;
+
     var layout = MODE_LAYOUT[platformMode] || MODE_LAYOUT.overview;
     grid.innerHTML = layout.order.map(k => (W[k]||'').replace('__wide__', layout.wide.includes(k) ? 'hub-card wide' : 'hub-card')).join('');
 }
@@ -1191,7 +1181,27 @@ function enterApp() {
     showTab('hub');
 }
 
+// NAVIGATION ACCORDION SETUP
+document.querySelectorAll('.nav-group-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const group = header.closest('.nav-group');
+    group.classList.toggle('open');
+    let openGroups = JSON.parse(localStorage.getItem('pos-nav-state') || '["money"]');
+    if (group.classList.contains('open')) {
+      if (!openGroups.includes(group.dataset.group)) openGroups.push(group.dataset.group);
+    } else {
+      openGroups = openGroups.filter(id => id !== group.dataset.group);
+    }
+    localStorage.setItem('pos-nav-state', JSON.stringify(openGroups));
+  });
+});
+JSON.parse(localStorage.getItem('pos-nav-state') || '["money"]').forEach(id => {
+  const g = document.querySelector(`.nav-group[data-group="${id}"]`);
+  if(g) g.classList.add('open');
+});
+
 const tabTitles={hub:"Command Center",dashboard:"Overview",transactions:"Transactions",accounts:"Accounts",transfers:"Transfers",investments:"Investments",debts:"Debts",planned:"Planned Payments",wishlist:"Wishlist",budgets:"Budgets",analytics:"Analytics",settings:"Settings",journal:"Journal",tasks:"Tasks",habits:"Habits",subscriptions:"Subscriptions",vault:"Vault"};
+
 function showTab(id){
     document.querySelectorAll(".nav-item, .nav-sub-item").forEach(x=>x.classList.remove("active"));
     let navBtn = document.querySelector(`[data-tab="${id}"]`);
@@ -1239,20 +1249,35 @@ function openTxn(type){ showTab("transactions"); let sel = document.getElementBy
 document.querySelectorAll(".nav-item, .nav-sub-item").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 
 function toggleDark(){document.body.classList.toggle("dark");localStorage.setItem("expense-dark",document.body.classList.contains("dark"))}
-async function deleteProfile(){
-    const ok = await appConfirm("Delete your profile and erase all data?\n\nThis will completely remove your local data and attempt to delete the cloud backup. This cannot be undone.");
-    if(!ok) return; const phrase = await appPrompt('Type DELETE to confirm.'); if(phrase !== "DELETE"){ await appAlert("Nothing was erased."); return; }
-    state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[],vault:[]};
-    if(googleToken) {
-        try {
-            const qUrl = '[https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=](https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=)' + encodeURIComponent('name="expense_manager_sync.json"');
-            const qRes = await fetch(qUrl, { headers: { Authorization: `Bearer ${googleToken}` } });
-            const qData = await qRes.json();
-            if(qData.files && qData.files.length > 0) { await fetch(`[https://www.googleapis.com/drive/v3/files/$](https://www.googleapis.com/drive/v3/files/$){qData.files[0].id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${googleToken}` } }); }
-        } catch(e) { console.error("Could not delete Drive file", e); }
+
+async function eraseAllData(){
+    if(await appConfirm("Erase all your data? This will empty your records but keep you logged in.")){
+        const phrase = await appPrompt('Type ERASE to confirm.');
+        if(phrase !== "ERASE") { await appAlert("Data was not erased."); return; }
+        state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[],vault:[]};
+        await forceSyncToDrive();
+        render();
+        appAlert("All data erased.");
     }
-    handleGoogleSignOut(); setTimeout(() => alert("Your profile and all associated data have been permanently deleted."), 300);
 }
+
+async function deleteProfile(){
+    if(await appConfirm("Delete your profile and erase all data?\n\nThis will completely remove your local data and attempt to delete the cloud backup. This cannot be undone.")){
+        const phrase = await appPrompt('Type DELETE to confirm.'); 
+        if(phrase !== "DELETE"){ await appAlert("Nothing was erased."); return; }
+        state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[],habits:[],subscriptions:[],vault:[]};
+        if(googleToken) {
+            try {
+                const qUrl = '[https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=](https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=)' + encodeURIComponent('name="expense_manager_sync.json"');
+                const qRes = await fetch(qUrl, { headers: { Authorization: `Bearer ${googleToken}` } });
+                const qData = await qRes.json();
+                if(qData.files && qData.files.length > 0) { await fetch(`[https://www.googleapis.com/drive/v3/files/$](https://www.googleapis.com/drive/v3/files/$){qData.files[0].id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${googleToken}` } }); }
+            } catch(e) { console.error("Could not delete Drive file", e); }
+        }
+        handleGoogleSignOut(); setTimeout(() => alert("Your profile and all associated data have been permanently deleted."), 300);
+    }
+}
+
 function backup(){download(`expense-backup-${today()}.json`,JSON.stringify(state,null,2),"application/json")}
 function download(n,t,type){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type}));a.download=n;a.click()}
 document.getElementById('importFile').addEventListener('change', async function(e) {

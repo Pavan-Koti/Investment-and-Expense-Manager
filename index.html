@@ -212,26 +212,6 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
 .financial-summary > .card{width:100% !important;min-width:0 !important;margin:0 !important;height:116px !important;}
 .financial-summary .hero,.financial-summary .kpi{min-height:116px !important;height:100% !important;}
 @media(max-width:700px){.financial-summary{grid-template-columns:1fr !important}.financial-summary > .card{height:auto !important}}
-
-/* --- Journal (Scrapbook) --- */
-.journal-layout{display:flex;gap:12px;height:calc(100vh - 300px);min-height:440px}
-.journal-index{width:220px;background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:14px;overflow-y:auto;flex-shrink:0;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-.journal-index h4{margin:0 0 10px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);border-bottom:1px solid var(--hair);padding-bottom:10px;font-weight:650}
-.index-list{display:flex;flex-direction:column;gap:2px}
-.index-item{padding:7px 10px;font-size:13px;cursor:pointer;border-radius:8px;font-weight:500;border-left:3px solid transparent;color:var(--text)}
-.index-item:hover{background:var(--surface2)}
-.index-item.active{background:var(--accentSoft);color:var(--accent);border-left-color:var(--accent)}
-.book-page{flex:1;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--hair)}
-.page-header{padding:20px 30px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--hair);margin:0 15px 10px}
-.page-date{font-family:Georgia,serif;font-size:22px;margin:0;color:var(--text)}
-.page-content{flex:1;padding:0 30px 30px;font-family:Georgia,serif;font-size:16px;line-height:2;color:var(--text);overflow-y:auto;position:relative;white-space:pre-wrap}
-.draggable-media{position:absolute;padding:8px 8px 26px;background:var(--surface);box-shadow:0 6px 18px rgba(0,0,0,.18);cursor:grab;user-select:none;max-width:240px;transform:rotate(-2deg);z-index:10;border-radius:4px;border:1px solid var(--hair)}
-.draggable-media:nth-child(even){transform:rotate(2deg)}
-.draggable-media:active{cursor:grabbing;z-index:100;box-shadow:0 12px 28px rgba(0,0,0,.25);transform:scale(1.03)}
-.draggable-media img,.draggable-media video{width:100%;height:auto;border-radius:2px;pointer-events:none;display:block}
-.draggable-media video{pointer-events:auto}
-.draggable-media .pin{position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:10px;height:10px;background:var(--red);border-radius:50%;box-shadow:1px 2px 3px rgba(0,0,0,.3)}
-@media(max-width:900px){.journal-layout{flex-direction:column;height:auto}.journal-index{width:100%;max-height:180px}}
 </style>
 </head>
 <body data-product-version="V30.0-PROD">
@@ -307,10 +287,6 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
     <button type="button" class="navbtn" data-tab="planned"><span>◷&nbsp; Planned</span></button>
     <button type="button" class="navbtn" data-tab="wishlist"><span>☆&nbsp; Wishlist</span></button>
     <button type="button" class="navbtn" data-tab="budgets"><span>◒&nbsp; Budgets</span></button>
-
-    <div class="navsection">Life</div>
-    <button type="button" class="navbtn" data-tab="journal"><span>📔&nbsp; Journal</span></button>
-    <button type="button" class="navbtn" data-tab="tasks"><span>☑&nbsp; Tasks</span></button>
   </nav>
 </aside>
 <main class="content">
@@ -554,47 +530,6 @@ body.dark .story-container { background:linear-gradient(135deg, #2c2c2e 0%, #1c1
     </div>
 </div></section>
 
-<section id="tasks" style="display:none"><div class="layout">
-  <div class="card">
-    <h2>Add task</h2>
-    <form id="taskForm" class="form">
-      <div class="field"><label>Task *</label><input id="taskName" required placeholder="Renew car insurance"></div>
-      <div class="row">
-        <div class="field"><label>Due date</label><input id="taskDue" type="date"></div>
-        <div class="field"><label>Priority</label><select id="taskPriority"><option>Medium</option><option>High</option><option>Low</option></select></div>
-      </div>
-      <button class="primary">Add Task</button>
-    </form>
-  </div>
-  <div class="card">
-    <h2>Checklist</h2>
-    <div id="taskList" class="list"></div>
-  </div>
-</div></section>
-
-<section id="journal" style="display:none">
-  <div style="display:flex; justify-content:flex-end; gap:8px; align-items:center; margin-bottom:14px; flex-wrap:wrap;">
-    <input type="date" id="journalNav" style="width:auto;">
-    <button type="button" class="outline" id="btnJournalToday">Today</button>
-    <button type="button" class="primary" id="btnNewJournal">＋ New Entry</button>
-  </div>
-  <div class="journal-layout">
-    <div class="journal-index">
-      <h4>Entries</h4>
-      <div class="index-list" id="journalIndexList"></div>
-    </div>
-    <div class="book-page">
-      <div class="page-header">
-        <h2 class="page-date" id="journalPageDate">Select a date</h2>
-        <button type="button" class="outline" id="btnEditJournal" style="display:none;">✎ Edit</button>
-      </div>
-      <div class="page-content" id="journalPageContent">
-        <div class="empty" id="journalEmptyState" style="padding-top:12vh;">✍️<br><br>Your mind is a blank page today.<br>Click "New Entry" to start writing.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <div id="modal" class="modal"><div class="modalbox"><div class="modalhead"><h2 id="modalTitle"></h2><button type="button" onclick="closeModal()">×</button></div><div id="modalBody"></div></div></div>
 </main>
 </div>
@@ -613,7 +548,7 @@ window.appPrompt = function(msg, defaultVal="") { return new Promise(resolve => 
 
 const EXPENSE_CAT=["Food","Groceries","Transport","Bills","Shopping","Health","Entertainment","Travel","Education","Home","Other"];
 const INCOME_CAT=["Salary","FD Interest","MIS Post","Dividends","Equity","Options","Other"];
-let state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[],journal:[],tasks:[]};
+let state={accounts:[],expenses:[],transfers:[],planned:[],wishlist:[],budgets:[],investments:[],debts:[]};
 const today=()=>new Date().toISOString().slice(0,10),ym=()=>today().slice(0,7);
 const money=n=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2}).format(n||0);
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
@@ -682,7 +617,6 @@ function render(){
     
     renderDynamicInsights(monthExp,plans); renderCategories(monthExp); renderUpcoming(); renderWishlist(); renderAccounts(); 
     renderExpenses(); renderTransfers(); renderPlanned(); renderBudgets(); renderInvestments(); renderDebts(); renderAnalytics();
-    renderTasks(); renderJournalIndex();
 }
 
 // Dashboard Tabs Switcher
@@ -791,7 +725,6 @@ wishForm.onsubmit=async e=>{e.preventDefault();await put("wishlist",{id:uid(),na
 budgetForm.onsubmit=async e=>{e.preventDefault();let old=state.budgets.find(x=>x.category===budgetCategory.value&&x.month===ym());await put("budgets",{id:old?.id||uid(),category:budgetCategory.value,amount:+budgetAmount.value,month:ym()});budgetForm.reset();}
 investForm.onsubmit=async e=>{e.preventDefault();let actualType = invType.value === 'Other' ? invOtherType.value.trim() : invType.value; await put("investments",{id:uid(),name:invName.value,amount:+invAmount.value,date:invDate.value,type:actualType,maturity:invMaturity.value}); investForm.reset(); invDate.value=today(); document.getElementById('invOtherWrap').style.display='none';}
 debtForm.onsubmit=async e=>{e.preventDefault();let actualType = debtType.value === 'Other' ? debtOtherType.value.trim() : debtType.value; await put("debts",{id:uid(),name:debtName.value,amount:+debtAmount.value,date:debtDate.value,apr:+debtApr.value,type:actualType}); debtForm.reset(); debtDate.value=today(); document.getElementById('debtOtherWrap').style.display='none';}
-taskForm.onsubmit=async e=>{e.preventDefault(); await put("tasks",{id:uid(),name:taskName.value.trim(),dueDate:taskDue.value,priority:taskPriority.value,completed:false,created:Date.now()}); taskForm.reset();}
 
 async function removeExpense(id){if(await appConfirm("Delete transaction?")){await del("expenses",id);}}
 async function removeTransfer(id){if(await appConfirm("Delete transfer?")){await del("transfers",id);}}
@@ -817,141 +750,6 @@ function editWishlist(id){let x=state.wishlist.find(a=>a.id===id);openModal("Edi
 function editBudget(id){let x=state.budgets.find(a=>a.id===id);openModal("Edit Budget",`<form id="editForm" class="form"><div class="field"><label>Category</label><input id="bCat" value="${esc(x.category)}" required></div><div class="field"><label>Limit</label><input id="bAmt" type="number" step=".01" required value="${x.amount}"></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); editForm.onsubmit=async e=>{e.preventDefault();x.category=bCat.value;x.amount=+bAmt.value;await put("budgets",x);closeModal();}}
 function editInvestment(id){let x=state.investments.find(a=>a.id===id);openModal("Edit Investment",`<form id="editForm" class="form"><div class="field"><label>Name</label><input id="iName" required value="${esc(x.name)}"></div><div class="row"><div class="field"><label>Amount</label><input id="iAmt" type="number" step=".01" required value="${x.amount}"></div><div class="field"><label>Date</label><input id="iDate" type="date" required value="${x.date}"></div></div><div class="field"><label>Type</label><input id="iType" required value="${esc(x.type)}"></div><div class="field"><label>Maturity</label><input id="iMat" type="date" value="${x.maturity||""}"></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); editForm.onsubmit=async e=>{e.preventDefault();x.name=iName.value;x.amount=+iAmt.value;x.date=iDate.value;x.type=iType.value;x.maturity=iMat.value;await put("investments",x);closeModal();}}
 function editDebt(id){let x=state.debts.find(a=>a.id===id);openModal("Edit Debt",`<form id="editForm" class="form"><div class="field"><label>Name</label><input id="dName" required value="${esc(x.name)}"></div><div class="row"><div class="field"><label>Amount</label><input id="dAmt" type="number" step=".01" required value="${x.amount}"></div><div class="field"><label>APR %</label><input id="dApr" type="number" step=".01" value="${x.apr||0}"></div></div><div class="row"><div class="field"><label>Date</label><input id="dDate" type="date" required value="${x.date}"></div><div class="field"><label>Type</label><input id="dType" required value="${esc(x.type)}"></div></div><div class="modalactions"><button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save</button></div></form>`); editForm.onsubmit=async e=>{e.preventDefault();x.name=dName.value;x.amount=+dAmt.value;x.apr=+dApr.value;x.date=dDate.value;x.type=dType.value;await put("debts",x);closeModal();}}
-
-// ==============================================================================
-// TASKS
-// ==============================================================================
-function taskPill(p){return p==='High'?'bad':p==='Low'?'good':'warn';}
-function renderTasks(){
-    let rows=[...state.tasks].sort((a,b)=>{
-        if(!!a.completed!==!!b.completed) return a.completed?1:-1;
-        return (a.dueDate||"9999-99-99").localeCompare(b.dueDate||"9999-99-99");
-    });
-    taskList.innerHTML = rows.length ? rows.map(t=>`<div class="item"><div class="itemtop"><div><b style="${t.completed?'text-decoration:line-through;color:var(--muted)':''}">${esc(t.name)}</b><div class="itemmeta">${t.dueDate?`Due ${t.dueDate}`:'No due date'} • <span class="pill ${taskPill(t.priority)}">${esc(t.priority||'Medium')}</span></div></div></div><div style="margin-top:8px; display:flex; gap:8px;"><button type="button" class="outline" onclick="toggleTask('${t.id}')">${t.completed?'Mark active':'Mark done'}</button><button type="button" class="danger outline" onclick="removeTask('${t.id}')">Delete</button></div></div>`).join("") : "<div class='empty'>No tasks yet. Add one to get started.</div>";
-}
-async function toggleTask(id){let t=state.tasks.find(x=>x.id===id); if(t){t.completed=!t.completed; await put("tasks",t);}}
-async function removeTask(id){if(await appConfirm("Delete this task?")){await del("tasks",id);}}
-
-// ==============================================================================
-// JOURNAL (SCRAPBOOK)
-// ==============================================================================
-const getBase64 = file => new Promise((resolve,reject)=>{const r=new FileReader(); r.readAsDataURL(file); r.onload=()=>resolve(r.result); r.onerror=reject;});
-
-function initJournal(){
-    const dates=[...new Set(state.journal.map(x=>x.date))].sort().reverse();
-    const target = dates.length ? dates[0] : today();
-    journalNav.value = target;
-    renderJournalPage(target);
-}
-journalNav.addEventListener('change', e=>renderJournalPage(e.target.value));
-btnJournalToday.addEventListener('click', ()=>{ journalNav.value=today(); renderJournalPage(today()); });
-btnNewJournal.addEventListener('click', ()=>openJournalEditor(journalNav.value||today()));
-btnEditJournal.addEventListener('click', ()=>openJournalEditor(journalNav.value));
-
-function renderJournalIndex(){
-    const list=document.getElementById('journalIndexList'); if(!list) return;
-    const dates=[...new Set(state.journal.map(x=>x.date))].sort().reverse();
-    list.innerHTML = dates.length ? dates.map(d=>{
-        const dt=new Date(d+'T12:00:00');
-        const label=dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-        const active = journalNav && journalNav.value===d ? ' active':'';
-        return `<div class="index-item${active}" onclick="journalNav.value='${d}'; renderJournalPage('${d}')">${esc(label)}</div>`;
-    }).join("") : "<div class='empty'>No entries yet.</div>";
-}
-
-function renderJournalPage(dateStr){
-    const entry = state.journal.find(x=>x.date===dateStr);
-    const dt = new Date(dateStr+'T12:00:00');
-    journalPageDate.textContent = dt.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-    renderJournalIndex();
-    const area = journalPageContent;
-    area.innerHTML = '';
-    if(!entry){
-        area.innerHTML = `<div class="empty" style="padding-top:12vh;">✍️<br><br>Your mind is a blank page today.<br>Click "New Entry" to start writing.</div>`;
-        btnEditJournal.style.display='none';
-        return;
-    }
-    btnEditJournal.style.display='inline-block';
-    const txt=document.createElement('div');
-    txt.textContent = entry.text || "";
-    txt.style.position='relative'; txt.style.zIndex='1';
-    area.appendChild(txt);
-    (entry.media||[]).forEach((m,idx)=>{
-        const w=document.createElement('div');
-        w.className='draggable-media';
-        w.style.top=(m.y??(20+idx*40))+'px';
-        w.style.left=(m.x??(300+idx*30))+'px';
-        w.dataset.id=entry.id; w.dataset.idx=idx;
-        w.innerHTML='<div class="pin"></div>';
-        if((m.type||"").startsWith('image/')){ let img=document.createElement('img'); img.src=m.url; w.appendChild(img); }
-        else if((m.type||"").startsWith('video/')){ let vid=document.createElement('video'); vid.src=m.url; vid.controls=true; w.appendChild(vid); }
-        area.appendChild(w);
-    });
-}
-
-function openJournalEditor(dateStr){
-    const existing = state.journal.find(x=>x.date===dateStr);
-    openModal(existing?"Edit Journal Entry":"New Journal Entry", `<form id="editForm" class="form">
-        <div class="field"><label>Date</label><input id="jDate" type="date" required value="${dateStr}"></div>
-        <div class="field"><label>Your thoughts</label><textarea id="jText" style="height:150px;">${esc(existing?.text||"")}</textarea></div>
-        <div class="field"><label>Attach photos / video</label><input type="file" id="jMedia" accept="image/*,video/*" multiple></div>
-        <div class="modalactions">${existing?`<button type="button" class="danger outline" onclick="deleteJournalEntry('${existing.id}')">Delete</button>`:''}<button type="button" class="outline" onclick="closeModal()">Cancel</button><button class="primary">Save Page</button></div>
-    </form>`);
-    editForm.onsubmit = async e=>{
-        e.preventDefault();
-        const newDate = jDate.value;
-        const currentMedia = existing?.media || [];
-        const files = Array.from(jMedia.files || []);
-        let newMedia=[];
-        for(const f of files){
-            if(f.size > 2*1024*1024){ await appAlert(`"${f.name}" is larger than 2MB and was skipped. Photos are stored inside your synced data file, so please use smaller images.`); continue; }
-            try{ newMedia.push({url:await getBase64(f), type:f.type, x:null, y:null}); }catch(err){}
-        }
-        const payload = {
-            id: existing?.id || uid(),
-            date: newDate,
-            text: jText.value,
-            media: [...currentMedia, ...newMedia],
-            created: existing?.created || Date.now()
-        };
-        closeModal();
-        await put("journal", payload);
-        journalNav.value = newDate;
-        renderJournalPage(newDate);
-    };
-}
-
-async function deleteJournalEntry(id){
-    if(await appConfirm("Delete this journal entry? This cannot be undone.")){
-        closeModal();
-        await del("journal", id);
-        const dates=[...new Set(state.journal.map(x=>x.date))].sort().reverse();
-        const next = dates.length?dates[0]:today();
-        journalNav.value=next;
-        renderJournalPage(next);
-    }
-}
-
-// Drag-to-position media on the journal page
-let jDrag=false, jCurEl=null, jSX,jSY,jIL,jIT;
-journalPageContent.addEventListener('mousedown', e=>{
-    let el=e.target.closest('.draggable-media');
-    if(el && e.target.tagName!=='VIDEO'){ jDrag=true; jCurEl=el; jSX=e.clientX; jSY=e.clientY; jIL=el.offsetLeft; jIT=el.offsetTop; }
-});
-document.addEventListener('mousemove', e=>{
-    if(jDrag && jCurEl){ jCurEl.style.left=Math.max(10, jIL+(e.clientX-jSX))+'px'; jCurEl.style.top=Math.max(10, jIT+(e.clientY-jSY))+'px'; }
-});
-document.addEventListener('mouseup', async ()=>{
-    if(jDrag && jCurEl){
-        let entry = state.journal.find(x=>x.id===jCurEl.dataset.id);
-        if(entry && entry.media && entry.media[jCurEl.dataset.idx]){
-            entry.media[jCurEl.dataset.idx].x = parseInt(jCurEl.style.left);
-            entry.media[jCurEl.dataset.idx].y = parseInt(jCurEl.style.top);
-            await put("journal", entry);
-        }
-        jDrag=false; jCurEl=null;
-    }
-});
 
 function openModal(t,b){modalTitle.textContent=t;modalBody.innerHTML=b;modal.classList.add("open")}
 function closeModal(){modal.classList.remove("open")}
@@ -1347,14 +1145,13 @@ function enterApp() {
     showTab('dashboard');
 }
 
-const tabTitles={dashboard:"Overview",transactions:"Transactions",accounts:"Accounts",transfers:"Transfers",investments:"Investments",debts:"Debts",planned:"Planned Payments",wishlist:"Wishlist",budgets:"Budgets",analytics:"Analytics",journal:"Journal",tasks:"Tasks",settings:"Settings"};
+const tabTitles={dashboard:"Overview",transactions:"Transactions",accounts:"Accounts",transfers:"Transfers",investments:"Investments",debts:"Debts",planned:"Planned Payments",wishlist:"Wishlist",budgets:"Budgets",analytics:"Analytics",settings:"Settings"};
 function showTab(id){
  document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));
  Object.keys(tabTitles).forEach(x=> { let el = document.getElementById(x); if(el) el.style.display = (x===id) ? "block" : "none"; });
  let pt = document.getElementById('pageTitle'); if(pt) pt.textContent=tabTitles[id];
  let oa = document.getElementById("overviewActions"); if(oa) oa.style.display = (id==="dashboard") ? "flex" : "none";
  let ps = document.getElementById("pageSub"); if(ps) ps.style.display = (id==="dashboard") ? "block" : "none";
- if(id==="journal") initJournal();
  window.scrollTo({top:0,behavior:"smooth"});
 }
 function goHome(){showTab("dashboard")}

@@ -177,24 +177,78 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 .vault-row .grow{flex:1;min-width:0} .vault-name{font-weight:600;font-size:14px;word-break:break-word} .vault-meta{display:flex;align-items:center;gap:10px;margin-top:5px;font-size:11px;color:var(--muted);flex-wrap:wrap} .vault-when{font-weight:600} .vault-when.soon{color:var(--amber)} .vault-when.over{color:var(--red)}
 .sub-burn{display:flex;gap:26px;padding:13px 16px;border:1px solid var(--border);border-radius:12px;background:var(--accentSoft);margin-bottom:14px} .sub-burn .l{font-size:11px;color:var(--muted)} .sub-burn .v{font-size:18px;font-weight:650;color:var(--accent);margin-top:3px} .sub-due{font-size:11px;font-weight:600;color:var(--muted)} .sub-due.soon{color:var(--red)}
 
-/* Hub specific */
-.hub-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px;flex-wrap:wrap}
-.hub-greeting{margin:0;font-size:24px;font-weight:650;letter-spacing:-.03em} .hub-sub{margin:5px 0 0;color:var(--muted);font-size:13px}
-.mode-switch{display:inline-flex;background:var(--surface2);border:1px solid var(--hair);border-radius:12px;padding:3px;gap:2px}
-.mode-switch button{border:none;background:transparent;padding:7px 14px;border-radius:9px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
-.mode-switch button:hover{color:var(--text);box-shadow:none;background:transparent}
-.mode-switch button.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px var(--accentSoft)}
-.hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-content:start}
-.hub-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px; animation:fadeIn .25s ease;} .hub-card.wide{grid-column:1 / -1}
-.hub-card-h{display:flex;justify-content:space-between;align-items:center;font-weight:650;font-size:14px}
-.hub-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px} .hm-label{font-size:11px;color:var(--muted)} .hm-val{font-size:20px;font-weight:600;margin-top:3px;letter-spacing:-.02em;white-space:nowrap}
-.hub-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--hair)} .hub-row:last-child{border-bottom:none;padding-bottom:0}
-.hub-row .grow{flex:1;min-width:0} .hub-row .grow b{font-size:13px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .hub-row .grow .sub{font-size:11px;color:var(--muted);margin-top:1px}
-.hub-empty{color:var(--muted);font-size:12px;padding:8px 0}
-.mini-check{flex-shrink:0;width:22px;height:22px;border-radius:7px;border:1.5px solid var(--hair);background:transparent;color:#fff;cursor:pointer;display:grid;place-items:center;font-size:12px;font-weight:700;padding:0;transition:all .15s}
-.mini-check:hover{border-color:var(--accent)} .mini-check.on{background:var(--green);border-color:transparent;box-shadow:0 0 9px rgba(16,185,129,.4)}
-.hub-ai-btn{width:100%;justify-content:center;font-weight:600;display:flex;align-items:center;gap:8px}
-.linklike{border:none;background:transparent;color:var(--accent);font-weight:600;font-size:12px;cursor:pointer;padding:2px 4px} .linklike:hover{text-decoration:underline;}
+/* Command Center redesign */
+#hub{padding-bottom:20px;}
+.hub-shell{display:flex;flex-direction:column;gap:16px;min-height:0;}
+.hub-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin:0 0 2px;}
+.hub-brand{display:flex;align-items:center;gap:12px;min-width:0;}
+.hub-brand-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#8e8df5);color:#fff;font-size:20px;box-shadow:0 8px 18px var(--accentSoft);flex:0 0 auto;}
+.hub-greeting{margin:0;font-size:24px;font-weight:650;letter-spacing:-.035em;line-height:1.05;}
+.hub-sub{margin:4px 0 0;color:var(--muted);font-size:13px;}
+.hub-head-actions{display:flex;align-items:center;gap:8px;position:relative;}
+.hub-date,.hub-customize{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:9px;background:var(--surface);border:1px solid var(--border);box-shadow:none;font-size:12px;font-weight:600;color:var(--text);}
+.hub-date:hover,.hub-customize:hover{background:var(--hover-bg);box-shadow:none;}
+.hub-customize-panel{display:none;position:absolute;right:0;top:calc(100% + 8px);z-index:80;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.14);backdrop-filter:blur(20px);}
+.hub-customize-panel.open{display:block;}
+.hub-customize-panel .mode-switch{display:inline-flex;}
+.mode-switch{display:inline-flex;background:var(--surface2);border:1px solid var(--hair);border-radius:10px;padding:3px;gap:2px;}
+.mode-switch button{border:none;background:transparent;padding:7px 12px;border-radius:8px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
+.mode-switch button:hover{color:var(--text);box-shadow:none;background:transparent;}
+.mode-switch button.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px var(--accentSoft);}
+.hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch;}
+.hub-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;animation:fadeIn .25s ease;}
+.hub-card.wide{grid-column:1 / -1;}
+.hub-card-h{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:650;font-size:14px;min-height:32px;}
+.hub-card-title{display:flex;align-items:center;gap:9px;min-width:0;}
+.hub-card-title > span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hub-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;background:var(--accentSoft);color:var(--accent);font-size:16px;}
+.hub-icon.green{background:rgba(16,185,129,.10);color:var(--green)}
+.hub-icon.red{background:rgba(239,68,68,.10);color:var(--red)}
+.hub-icon.amber{background:rgba(245,158,11,.11);color:var(--amber)}
+.hub-icon.purple{background:rgba(139,92,246,.10);color:#8b5cf6}
+.hub-icon.pink{background:rgba(236,72,153,.10);color:#ec4899}
+.hub-card-sub{font-size:11px;color:var(--muted);font-weight:400;margin-top:2px;}
+.hub-card-scroll{overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-right:2px;}
+.hub-card-scroll::-webkit-scrollbar{width:5px;}
+.hub-card-scroll::-webkit-scrollbar-track{background:transparent;}
+.hub-card-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px;}
+.hub-glance-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.hub-metric{border:1px solid var(--border);border-radius:12px;background:var(--surface2);padding:12px 10px;text-align:center;min-width:0;}
+.hub-metric .hm-label{font-size:11px;color:var(--text-secondary);white-space:nowrap;}
+.hub-metric .hm-val{font-size:17px;font-weight:600;margin-top:7px;letter-spacing:-.025em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hub-metric .hm-meta{font-size:10px;color:var(--muted);margin-top:5px;}
+.hub-link{display:flex;align-items:center;justify-content:space-between;width:100%;padding:9px 10px;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:9px;font-size:12px;font-weight:600;}
+.hub-link:hover{background:var(--accentSoft);box-shadow:none;}
+.hub-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--hair);min-height:42px;}
+.hub-row:last-child{border-bottom:none;}
+.hub-row .grow{flex:1;min-width:0;}
+.hub-row .grow b{font-size:12px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hub-row .grow .sub{font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hub-row strong{font-size:12px;font-weight:600;white-space:nowrap;}
+.hub-empty{color:var(--muted);font-size:12px;padding:12px 2px;}
+.hub-mini-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--surface2);border:1px solid var(--border);flex:0 0 auto;font-size:13px;}
+.mini-check{flex-shrink:0;width:22px;height:22px;border-radius:7px;border:1.5px solid var(--hair);background:transparent;color:#fff;cursor:pointer;display:grid;place-items:center;font-size:12px;font-weight:700;padding:0;transition:all .15s;}
+.mini-check:hover{border-color:var(--accent);box-shadow:none;}
+.mini-check.on{background:var(--green);border-color:transparent;box-shadow:0 0 9px rgba(16,185,129,.25);}
+.hub-progress{display:flex;align-items:center;gap:12px;}
+.hub-progress-ring{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;background:conic-gradient(var(--green) var(--pct),var(--border) 0);position:relative;}
+.hub-progress-ring::after{content:"";width:34px;height:34px;border-radius:50%;background:var(--surface);position:absolute;}
+.hub-progress-ring span{position:relative;z-index:1;font-size:10px;font-weight:700;}
+.hub-insight{padding:12px;border:1px solid var(--accent);background:var(--accentSoft);border-radius:12px;font-size:12px;line-height:1.5;}
+.hub-quote{padding:18px 14px;border:1px solid rgba(236,72,153,.22);background:rgba(236,72,153,.045);border-radius:12px;text-align:center;font-size:14px;line-height:1.45;min-height:86px;display:flex;align-items:center;justify-content:center;}
+.hub-quote-mark{font-size:24px;color:#ec4899;line-height:1;align-self:flex-start;margin-right:6px;}
+.hub-action-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+.hub-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:74px;padding:9px 5px;border:1px solid var(--border);background:var(--surface2);border-radius:12px;font-size:10px;font-weight:500;color:var(--text);text-align:center;}
+.hub-action:hover{background:var(--hover-bg);box-shadow:0 4px 14px rgba(0,0,0,.05);transform:translateY(-1px);}
+.hub-action .hub-icon{width:28px;height:28px;font-size:14px;}
+.hub-txn-list{max-height:190px;}
+.hub-list{max-height:180px;}
+.hub-footer-link{margin-top:auto;}
+.hub-ai-btn{width:100%;justify-content:space-between;font-weight:600;display:flex;align-items:center;gap:8px;}
+.linklike{border:none;background:transparent;color:var(--accent);font-weight:600;font-size:11px;cursor:pointer;padding:2px 4px;white-space:nowrap;}
+.linklike:hover{text-decoration:underline;box-shadow:none;background:transparent;}
+@media(max-width:1050px){.hub-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.hub-card.wide{grid-column:1 / -1;}}
+@media(max-width:700px){.hub-grid{grid-template-columns:1fr;}.hub-card.wide{grid-column:auto;}.hub-head{align-items:flex-start;}.hub-head-actions{width:100%;justify-content:flex-start;}.hub-customize-panel{left:0;right:auto;}.hub-glance-metrics{gap:7px;}.hub-action-grid{grid-template-columns:repeat(4,minmax(0,1fr));}.hub-card{padding:14px;}.hub-greeting{font-size:21px;}}
 
 /* Time Machine & Butterfly Effect */
 #butterflyOverlay{position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center,rgba(12,12,24,.82),rgba(0,0,0,.93));backdrop-filter:blur(14px);opacity:0;visibility:hidden;transition:opacity .5s ease,visibility .5s;cursor:pointer;padding:24px}
@@ -407,15 +461,26 @@ body.dark #timePastBadge{color:#1c1c1e}
 
 <!-- COMMAND CENTER HUB -->
 <section id="hub" style="display:block;">
-  <div class="hub-head">
-    <div><h2 class="hub-greeting" id="hubGreeting">Welcome back</h2><p class="hub-sub" id="hubSub">Your whole day, connected in one place.</p></div>
-    <div class="mode-switch" id="modeSwitch">
-      <button type="button" data-mode="overview" onclick="setPlatformMode('overview')" class="active">Overview</button>
-      <button type="button" data-mode="focus" onclick="setPlatformMode('focus')">Focus</button>
-      <button type="button" data-mode="wealth" onclick="setPlatformMode('wealth')">Wealth</button>
+  <div class="hub-shell">
+    <div class="hub-head">
+      <div class="hub-brand">
+        <div class="hub-brand-icon">◈</div>
+        <div><h2 class="hub-greeting" id="hubGreeting">Command Center</h2><p class="hub-sub" id="hubSub">Your whole day, connected in one place.</p></div>
+      </div>
+      <div class="hub-head-actions">
+        <button type="button" class="hub-date" onclick="timeMachineNow()">▣ <span id="hubDateLabel">Today</span>⌄</button>
+        <button type="button" class="hub-customize" onclick="toggleHubCustomize()">⚙ Customize</button>
+        <div class="hub-customize-panel" id="hubCustomizePanel">
+          <div class="mode-switch" id="modeSwitch">
+            <button type="button" data-mode="overview" onclick="setPlatformMode('overview');toggleHubCustomize(false)" class="active">Overview</button>
+            <button type="button" data-mode="focus" onclick="setPlatformMode('focus');toggleHubCustomize(false)">Focus</button>
+            <button type="button" data-mode="wealth" onclick="setPlatformMode('wealth');toggleHubCustomize(false)">Wealth</button>
+          </div>
+        </div>
+      </div>
     </div>
+    <div class="hub-grid" id="hubGrid"></div>
   </div>
-  <div class="hub-grid" id="hubGrid"></div>
 </section>
 
 <!-- Finance Overview -->
@@ -794,47 +859,82 @@ function renderAnalytics() {
 
 // Hub Mode Layout Logic
 var platformMode = localStorage.getItem('platform-mode') || 'overview';
+var tabTitles={hub:"Command Center",dashboard:"Overview",transactions:"Transactions",accounts:"Accounts",transfers:"Transfers",investments:"Investments",debts:"Debts",planned:"Planned Payments",wishlist:"Wishlist",budgets:"Budgets",analytics:"Analytics",settings:"Settings",journal:"Journal",tasks:"Tasks",habits:"Habits",subscriptions:"Subscriptions",vault:"Vault"};
 function setPlatformMode(m){ platformMode = m; localStorage.setItem('platform-mode', m); renderHub(); }
-var MODE_LAYOUT = {
-    overview: { order:['finance','tasks','habits','radar','journal','ai'], wide:['finance', 'radar'] },
-    focus:    { order:['tasks','habits','journal','ai','radar','finance'], wide:['tasks','habits'] },
-    wealth:   { order:['finance','radar','ai','tasks','habits','journal'], wide:['finance','radar'] }
+const MODE_LAYOUT = {
+    overview: { order:['glance','upcoming','tasks','reflection','ai','actions','transactions'], wide:['transactions'] },
+    focus:    { order:['tasks','reflection','ai','actions','glance','upcoming','transactions'], wide:['transactions'] },
+    wealth:   { order:['glance','upcoming','transactions','ai','actions','tasks','reflection'], wide:['transactions'] }
 };
+
+function toggleHubCustomize(force){
+    const panel=document.getElementById('hubCustomizePanel');
+    if(!panel) return;
+    const next=typeof force==='boolean'?force:!panel.classList.contains('open');
+    panel.classList.toggle('open',next);
+}
+
+document.addEventListener('click',e=>{
+    const panel=document.getElementById('hubCustomizePanel');
+    if(panel && panel.classList.contains('open') && !e.target.closest('.hub-head-actions')) panel.classList.remove('open');
+});
 
 function renderHub(){
     var grid = document.getElementById('hubGrid'); if(!grid) return;
     document.querySelectorAll('#modeSwitch button').forEach(b => b.classList.toggle('active', b.dataset.mode===platformMode));
+    var todayStr=today();
+    var todayDate=new Date(todayStr+'T00:00:00');
+    var vm=viewMonth || ym();
+    var todayExpenses=state.expenses.filter(x=>x.date===todayStr && x.type!=='income');
+    var todayIncome=state.expenses.filter(x=>x.date===todayStr && x.type==='income');
+    var balance=totalBal();
+    var monthSpent=state.expenses.filter(x=>x.date.startsWith(vm) && x.type!=='income').reduce((s,x)=>s+x.amount,0);
+    var monthIncome=state.expenses.filter(x=>x.date.startsWith(vm) && x.type==='income').reduce((s,x)=>s+x.amount,0);
+    var openTasks=(state.tasks||[]).filter(t=>!t.completed).sort((a,b)=>(a.dueDate||'\uffff').localeCompare(b.dueDate||'\uffff'));
+    var allTasks=state.tasks||[];
+    var completedTasks=allTasks.filter(t=>t.completed).length;
+    var taskPct=allTasks.length?Math.round(completedTasks/allTasks.length*100):0;
 
-    var vm = viewMonth || ym();
-    var bal = viewMonth ? totalBalAsOf(vm) : totalBal();
-    var spent = state.expenses.filter(x => x.date.startsWith(vm) && x.type!=='income').reduce((s,x)=>s+x.amount,0);
-    var W = {};
-
-    W.finance = `<div class="__wide__" data-w="finance"><div class="hub-card-h"><span>💰 Finances</span><button class="linklike" onclick="showTab('dashboard')">Open →</button></div><div class="hub-metrics"><div><div class="hm-label">Balance${viewMonth?(' · '+formatMonthApple(vm)):''}</div><div class="hm-val income">${money(bal)}</div></div><div><div class="hm-label">Spent ${formatMonthApple(vm)}</div><div class="hm-val expense">${money(spent)}</div></div><div><div class="hm-label">Subs / mo</div><div class="hm-val warning">${money(monthlyBurn())}</div></div></div></div>`;
-    
-    var openTasks = (state.tasks||[]).filter(t=>!t.completed).sort((a,b)=>(a.dueDate||'\uffff').localeCompare(b.dueDate||'\uffff'));
-    var taskRows = openTasks.slice(0,4).map(t=>`<div class="hub-row"><button class="mini-check" onclick="toggleTask('${t.id}')"></button><div class="grow"><b>${esc(t.name)}</b>${t.dueDate?`<div class="sub">Due ${formatDateApple(t.dueDate)}</div>`:''}</div></div>`).join('');
-    W.tasks = `<div class="__wide__" data-w="tasks"><div class="hub-card-h"><span>☑ Today’s tasks</span><button class="linklike" onclick="showTab('tasks')">All ${openTasks.length} →</button></div>${taskRows || '<div class="hub-empty">Nothing open. You’re clear.</div>'}</div>`;
-    
-    var habitRows = (state.habits||[]).slice(0,4).map(h=>{ var st = habitStreak(h); var done = habitDoneToday(h); return `<div class="hub-row"><button class="mini-check${done?' on':''}" onclick="markHabitToday('${h.id}')">${done?'✓':''}</button><div class="grow"><b>${esc(h.name)}</b><div class="sub">${st?('🔥 '+st+'d streak'):'no streak yet'}</div></div></div>`; }).join('');
-    W.habits = `<div class="__wide__" data-w="habits"><div class="hub-card-h"><span>✦ Habits</span><button class="linklike" onclick="showTab('habits')">Open →</button></div>${habitRows || '<div class="hub-empty">No habits yet. Start one to build momentum.</div>'}</div>`;
-    
-    var t0 = new Date(); t0.setHours(0,0,0,0); var horizon = new Date(t0); horizon.setDate(horizon.getDate()+30); var radar = [];
-    (state.subscriptions||[]).forEach(x=>{ var d=nextRenewalDate(x); if(d && d<=horizon){ radar.push({name:x.name, amount:x.amount, date:d, kind:'Renewal'}); } });
-    (state.planned||[]).filter(pp=>!pp.paid && pp.date).forEach(pp=>{ var d=new Date(pp.date+'T00:00:00'); if(d>=t0 && d<=horizon){ radar.push({name:pp.name, amount:pp.amount, date:d, kind:'Payment'}); } });
-    (state.vault||[]).filter(v=>v.date).forEach(v=>{ var d=new Date(v.date+'T00:00:00'); if(d<=horizon){ radar.push({name:v.name, amount:null, date:d, kind:v.category||'Record'}); } });
+    var radar=[];
+    var horizon=new Date(todayDate); horizon.setDate(horizon.getDate()+30);
+    (state.subscriptions||[]).forEach(x=>{var d=nextRenewalDate(x);if(d&&d<=horizon)radar.push({name:x.name,amount:x.amount,date:d,kind:'Subscription'});});
+    (state.planned||[]).filter(pp=>!pp.paid&&pp.date).forEach(pp=>{var d=new Date(pp.date+'T00:00:00');if(d>=todayDate&&d<=horizon)radar.push({name:pp.name,amount:pp.amount,date:d,kind:'Planned'});});
+    (state.vault||[]).filter(v=>v.date).forEach(v=>{var d=new Date(v.date+'T00:00:00');if(d<=horizon)radar.push({name:v.name,amount:null,date:d,kind:v.category||'Record'});});
     radar.sort((a,b)=>a.date-b.date);
-    var radarRows = radar.slice(0,6).map(r=>{ var du = daysUntil(r.date); var when = du<0 ? ('overdue by '+(-du)+'d') : du===0 ? 'today' : du===1 ? 'tomorrow' : 'in '+du+' days'; return `<div class="hub-row"><div class="grow"><b>${esc(r.name)}</b><div class="sub${du<0?' sub-over':''}">${esc(r.kind)} · ${when}</div></div>${r.amount!=null?'<strong>'+money(r.amount)+'</strong>':''}</div>`; }).join('');
-    W.radar = `<div class="__wide__" data-w="radar"><div class="hub-card-h"><span>📡 Radar · next 30 days</span><button class="linklike" onclick="showTab('planned')">Open →</button></div>${radarRows || '<div class="hub-empty">Nothing due in the next month.</div>'}</div>`;
-    
-    var lastJ = [].concat(state.journal||[]).sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0];
-    var journalBody = lastJ ? `<div class="hub-row"><div class="grow"><b>Entry Logged</b><div class="sub">${lastJ.date?formatDateApple(lastJ.date):''}</div></div></div>${lastJ.date===today() ? '' : '<button class="linklike" style="align-self:flex-start; margin-top:10px;" onclick="showTab(\'journal\')">Log today →</button>'}` : '<div class="hub-empty">No entries yet. How did today feel?</div>';
-    W.journal = `<div class="__wide__" data-w="journal"><div class="hub-card-h"><span>✎ Reflection</span><button class="linklike" onclick="showTab('journal')">Open →</button></div>${journalBody}</div>`;
-    
-    W.ai = `<div class="__wide__" data-w="ai"><div class="hub-card-h"><span>✨ Copilot</span><button class="linklike" onclick="toggleAiPanel()">Chat →</button></div><div class="hub-empty" style="padding-top:0">I can see across every app. Ask me to connect the dots.</div><button type="button" class="primary hub-ai-btn" onclick="document.getElementById('aiInput').value='Plan my day'; toggleAiPanel(); sendAIPrompt();">✨ Plan my day</button></div>`;
 
-    var layout = MODE_LAYOUT[platformMode] || MODE_LAYOUT.overview;
-    grid.innerHTML = layout.order.map(k => (W[k]||'').replace('__wide__', layout.wide.includes(k) ? 'hub-card wide' : 'hub-card')).join('');
+    var lastJ=[].concat(state.journal||[]).sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0];
+    var reflection=(lastJ&&((lastJ.text||lastJ.note||'').trim()))?((lastJ.text||lastJ.note).trim()):'Every small step today builds a better tomorrow.';
+    if(reflection.length>170) reflection=reflection.slice(0,167)+'…';
+
+    var recent=(state.expenses||[]).slice().sort((a,b)=>((b.date||'').localeCompare(a.date||'')) || ((b.created||0)-(a.created||0))).slice(0,8);
+    var categoryIcon=(cat)=>{var c=(cat||'').toLowerCase();if(c.includes('food')||c.includes('grocery'))return '◉';if(c.includes('transport')||c.includes('fuel'))return '↗';if(c.includes('salary')||c.includes('income'))return '↓';return '•';};
+
+    var upcomingRows=radar.slice(0,8).map(r=>{var du=daysUntil(r.date);var when=du<0?'Overdue by '+(-du)+'d':du===0?'Today':du===1?'Tomorrow':'in '+du+' days';return `<div class="hub-row"><div class="hub-mini-icon">${r.kind==='Subscription'?'◫':r.kind==='Planned'?'▣':'⌁'}</div><div class="grow"><b>${esc(r.name)}</b><div class="sub">${esc(r.kind)} · ${when}</div></div>${r.amount!=null?`<strong>${money(r.amount)}</strong>`:''}</div>`;}).join('');
+
+    var taskRows=openTasks.slice(0,10).map(t=>`<div class="hub-row"><button class="mini-check" onclick="toggleTask('${t.id}')"></button><div class="grow"><b>${esc(t.name)}</b>${t.dueDate?`<div class="sub">${formatDateApple(t.dueDate)}</div>`:''}</div>${t.priority?`<span class="sub">${esc(t.priority)}</span>`:''}</div>`).join('');
+
+    var recentRows=recent.map(x=>`<div class="hub-row"><div class="hub-mini-icon">${x.type==='income'?'↓':categoryIcon(x.category)}</div><div class="grow"><b>${esc(x.category||'Transaction')}</b><div class="sub">${esc(x.type==='income'?'Income':(x.note||x.payment||'Expense'))} · ${formatDateApple(x.date)}</div></div><strong class="${x.type==='income'?'income':'expense'}">${x.type==='income'?'+':'−'} ${money(x.amount)}</strong></div>`).join('');
+
+    var action=(icon,label,fn,cls='')=>`<button type="button" class="hub-action" onclick="${fn}"><span class="hub-icon ${cls}">${icon}</span><span>${label}</span></button>`;
+
+    var W={};
+    W.glance=`<div class="hub-card" data-w="glance"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon">☼</span><span><span>Today at a glance</span><span class="hub-card-sub">${formatDateApple(todayStr)}</span></span></div></div><div class="hub-glance-metrics"><div class="hub-metric"><div class="hm-label">Expenses</div><div class="hm-val expense">${money(todayExpenses.reduce((s,x)=>s+x.amount,0))}</div><div class="hm-meta">${todayExpenses.length} transaction${todayExpenses.length===1?'':'s'}</div></div><div class="hub-metric"><div class="hm-label">Income</div><div class="hm-val income">${money(todayIncome.reduce((s,x)=>s+x.amount,0))}</div><div class="hm-meta">${todayIncome.length} transaction${todayIncome.length===1?'':'s'}</div></div><div class="hub-metric"><div class="hm-label">Balance</div><div class="hm-val">${money(balance)}</div><div class="hm-meta">Current</div></div></div><button type="button" class="hub-link hub-footer-link" onclick="showTab('dashboard')"><span>⌁ View Analytics</span><span>›</span></button></div>`;
+
+    W.upcoming=`<div class="hub-card" data-w="upcoming"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon purple">▣</span><span><span>Upcoming</span><span class="hub-card-sub">Next 30 days</span></span></div><button class="linklike" onclick="showTab('planned')">View All ›</button></div><div class="hub-card-scroll hub-list">${upcomingRows||'<div class="hub-empty">Nothing due in the next 30 days.</div>'}</div><button type="button" class="hub-link hub-footer-link" onclick="showTab('planned')"><span>▣ View All</span><span>›</span></button></div>`;
+
+    W.tasks=`<div class="hub-card" data-w="tasks"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon green">✓</span><span><span>Tasks</span><span class="hub-card-sub">${completedTasks} of ${allTasks.length} completed</span></span></div><div class="hub-progress"><div class="hub-progress-ring" style="--pct:${taskPct}%"><span>${taskPct}%</span></div></div></div><div class="hub-card-scroll hub-list">${taskRows||'<div class="hub-empty">Nothing open. You’re clear.</div>'}</div><button type="button" class="hub-link hub-footer-link" onclick="showTab('tasks')"><span>✓ View All Tasks</span><span>›</span></button></div>`;
+
+    W.reflection=`<div class="hub-card" data-w="reflection"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon pink">♡</span><span><span>Reflection</span><span class="hub-card-sub">How was your day?</span></span></div><button class="linklike" onclick="showTab('journal')">Open ›</button></div><div class="hub-quote"><span class="hub-quote-mark">“</span><span>${esc(reflection)}</span></div><button type="button" class="hub-link hub-footer-link" onclick="openJournalEntryModal(today())"><span>✎ Add Reflection</span><span>›</span></button></div>`;
+
+    W.ai=`<div class="hub-card" data-w="ai"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon">✦</span><span><span>Co-pilot</span><span class="hub-card-sub">AI-powered insights for you</span></span></div><button class="linklike" onclick="toggleAiPanel()">Chat ›</button></div><div class="hub-insight"><div>✦ You’ve spent ${monthIncome?Math.max(0,Math.round((1-monthSpent/Math.max(monthIncome,1))*100)):0}% less relative to income this month.</div><div style="margin-top:7px">✦ Savings this month: ${money(Math.max(0,monthIncome-monthSpent))}</div><div style="margin-top:7px">✦ Ask me to connect your finances, tasks and habits.</div></div><button type="button" class="hub-link hub-ai-btn" onclick="document.getElementById('aiInput').value='Plan my day'; toggleAiPanel(); sendAIPrompt();"><span>✦ Ask Co-pilot</span><span>›</span></button></div>`;
+
+    W.actions=`<div class="hub-card" data-w="actions"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon amber">ϟ</span><span><span>Quick Actions</span><span class="hub-card-sub">Common actions at your fingertips</span></span></div></div><div class="hub-action-grid">${action('−','Add Expense',"openTxn('expense')",'red')}${action('+','Add Income',"openTxn('income')",'green')}${action('⇄','Transfer',"showTab('transfers')",'')}${action('✓','New Task',"showTab('tasks')",'green')}${action('▤','New Journal',"openJournalEntryModal(today())",'pink')}${action('◔','Add Budget',"showTab('budgets')",'amber')}${action('◎','Add Goal',"showTab('wishlist')",'purple')}${action('☁','Upload File',"showTab('vault')",'')}</div></div>`;
+
+    W.transactions=`<div class="hub-card wide" data-w="transactions"><div class="hub-card-h"><div class="hub-card-title"><span class="hub-icon">≡</span><span><span>Recent Transactions</span><span class="hub-card-sub">Latest ${recent.length} transactions</span></span></div><button class="linklike" onclick="showTab('transactions')">View All Transactions ›</button></div><div class="hub-card-scroll hub-txn-list">${recentRows||'<div class="hub-empty">No transactions yet.</div>'}</div><div style="display:flex;justify-content:flex-end;"><button class="linklike" onclick="showTab('transactions')">View All Transactions ›</button></div></div>`;
+
+    var layout=MODE_LAYOUT[platformMode]||MODE_LAYOUT.overview;
+    grid.innerHTML=layout.order.map(k=>W[k]||'').join('');
+    var dl=document.getElementById('hubDateLabel'); if(dl) dl.textContent=viewMonth?formatMonthApple(viewMonth):formatDateApple(todayStr);
 }
 
 // Submissions
@@ -1246,8 +1346,6 @@ JSON.parse(localStorage.getItem('pos-nav-state') || '["money"]').forEach(id => {
   if(g) g.classList.add('open');
 });
 
-const tabTitles={hub:"Command Center",dashboard:"Overview",transactions:"Transactions",accounts:"Accounts",transfers:"Transfers",investments:"Investments",debts:"Debts",planned:"Planned Payments",wishlist:"Wishlist",budgets:"Budgets",analytics:"Analytics",settings:"Settings",journal:"Journal",tasks:"Tasks",habits:"Habits",subscriptions:"Subscriptions",vault:"Vault"};
-
 function showTab(id){
     document.querySelectorAll(".nav-item, .nav-sub-item").forEach(x=>x.classList.remove("active"));
     let navBtn = document.querySelector(`[data-tab="${id}"]`);
@@ -1284,7 +1382,7 @@ function showTab(id){
     } else {
         if(standardActions) standardActions.style.display = 'flex';
         if(journalActions) journalActions.style.display = 'none';
-        if(headerArea) headerArea.style.display = 'flex';
+        if(headerArea) headerArea.style.display = id === 'hub' ? 'none' : 'flex';
     }
 
     window.scrollTo({top:0,behavior:"smooth"});
